@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Developer Portal{% endblock %}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    height: 60px; background: #0f172a; color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .app-name { font-size: 20px; font-weight: 600; letter-spacing: 0.3px; }
+  .home-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: #2563eb; color: #fff; border: none;
+    padding: 9px 16px; border-radius: 8px; cursor: pointer;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: background 0.15s;
+  }
+  .home-btn:hover { background: #1d4ed8; }
+
+  /* ---------- LAYOUT ---------- */
+  .layout { display: flex; min-height: calc(100vh - 60px); }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar {
+    width: 280px; background: #1e293b; color: #e2e8f0;
+    transition: width 0.3s ease; overflow: hidden; flex-shrink: 0; order: -1;
+  }
+  .sidebar.collapsed { width: 52px; }
+  .sidebar-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px; border-bottom: 1px solid #334155;
+  }
+  .sidebar-title { font-weight: 600; white-space: nowrap; }
+  .sidebar.collapsed .sidebar-title { display: none; }
+  .toggle-btn {
+    background: #334155; color: #fff; border: none;
+    width: 32px; height: 32px; border-radius: 6px;
+    cursor: pointer; font-size: 16px; flex-shrink: 0;
+  }
+  .toggle-btn:hover { background: #475569; }
+  .menu, .submenu { list-style: none; }
+  .sidebar.collapsed nav { display: none; }
+  .menu-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 18px; cursor: pointer; white-space: nowrap;
+    transition: background 0.15s; user-select: none;
+    color: inherit; text-decoration: none;
+  }
+  .menu-link:hover { background: #334155; }
+  .submenu .menu-link          { padding-left: 34px; font-size: 14px; }
+  .submenu .submenu .menu-link { padding-left: 50px; font-size: 13px; color: #cbd5e1; }
+  .chevron { transition: transform 0.25s ease; font-size: 12px; }
+  li.open > .menu-link > .chevron { transform: rotate(90deg); }
+  .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  li.open > .submenu { max-height: 500px; }
+  .leaf { color: #94a3b8; }
+  .leaf:hover { color: #fff; }
+
+  /* ---------- MAIN CONTENT ---------- */
+  .main { flex: 1; padding: 50px; }
+
+  {% block extra_css %}{% endblock %}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="app-name">Developer Portal</span>
+  <a href="/" class="home-btn">🏠 Home</a>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Menu</span>
+      <button class="toggle-btn" id="toggleBtn" title="Collapse / expand">›</button>
+    </div>
+    <nav>
+      <ul class="menu">
+        <li><a href="/" class="menu-link leaf">Home</a></li>
+        <li class="has-children">
+          <div class="menu-link">Developers <span class="chevron">›</span></div>
+          <ul class="submenu">
+            <li><a href="/search/" class="menu-link leaf">Search Developer</a></li>
+            <li class="has-children">
+              <div class="menu-link">By Skill <span class="chevron">›</span></div>
+              <ul class="submenu">
+                <li><div class="menu-link leaf">Python</div></li>
+                <li><div class="menu-link leaf">Django</div></li>
+                <li><div class="menu-link leaf">Data Science</div></li>
+              </ul>
+            </li>
+            <li><div class="menu-link leaf">Active</div></li>
+            <li><div class="menu-link leaf">Inactive</div></li>
+          </ul>
+        </li>
+        <li class="has-children">
+          <div class="menu-link">Reports <span class="chevron">›</span></div>
+          <ul class="submenu">
+            <li><div class="menu-link leaf">Monthly</div></li>
+            <li><div class="menu-link leaf">Yearly</div></li>
+          </ul>
+        </li>
+        <li class="has-children">
+          <div class="menu-link">Settings <span class="chevron">›</span></div>
+          <ul class="submenu">
+            <li><div class="menu-link leaf">Profile</div></li>
+            <li><div class="menu-link leaf">Security</div></li>
+          </ul>
+        </li>
+        <li><div class="menu-link leaf">About</div></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- each page drops its unique content here -->
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+</div>
+
+<script>
+  document.querySelectorAll('.has-children > .menu-link').forEach(function (link) {
+    link.addEventListener('click', function () {
+      link.parentElement.classList.toggle('open');
+    });
+  });
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleBtn');
+  toggleBtn.addEventListener('click', function () {
+    sidebar.classList.toggle('collapsed');
+    toggleBtn.textContent = sidebar.classList.contains('collapsed') ? '‹' : '›';
+  });
+</script>
+
+</body>
+</html>
