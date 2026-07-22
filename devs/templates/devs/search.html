@@ -20,7 +20,8 @@
   .row { display: flex; padding: 12px 18px; }
   .row:nth-child(odd)  { background: #f4f6fc; }
   .row:nth-child(even) { background: #fff; }
-  .rlabel { width: 90px; flex-shrink: 0; font-weight: 600; color: #667eea; }
+  .rlabel { width: 80px; flex-shrink: 0; font-weight: 600; color: #667eea; }
+  .rlabel2 { width: 10px; flex-shrink: 0; font-weight: 600; color: #667eea; }
   .rvalue { flex: 1; }
   .status-active   { color: #2e9e5b; font-weight: 600; }
   .status-inactive { color: #c0392b; font-weight: 600; }
@@ -46,11 +47,11 @@
 
     <div id="info">
       {% if dev %}
-        <div class="row"><span class="rlabel">ID:</span><span class="rvalue">{{ dev.ID }}</span></div>
-        <div class="row"><span class="rlabel">Name:</span><span class="rvalue">{{ dev.NAME }}</span></div>
-        <div class="row"><span class="rlabel">DOB:</span><span class="rvalue">{{ dev.DOB }}</span></div>
-        <div class="row"><span class="rlabel">Skills:</span><span class="rvalue">{{ dev.SKILLS }}</span></div>
-        <div class="row"><span class="rlabel">Status:</span>
+        <div class="row"><span class="rlabel">ID</span><span class=rlabel2>:</span><span class="rvalue">{{ dev.ID }}</span></div>
+        <div class="row"><span class="rlabel">Name</span><span class=rlabel2>:</span><span class="rvalue">{{ dev.NAME }}</span></div>
+        <div class="row"><span class="rlabel">DOB</span><span class=rlabel2>:</span><span class="rvalue">{{ dev.DOB }}</span></div>
+        <div class="row"><span class="rlabel">Skills</span><span class=rlabel2>:</span><span class="rvalue">{{ dev.SKILLS }}</span></div>
+        <div class="row"><span class="rlabel">Status</span><span class=rlabel2>:</span>
           <span class="rvalue">
             {% if dev.ACTIVE_STATUS == 1 %}
               <span class="status-active">Active</span>
