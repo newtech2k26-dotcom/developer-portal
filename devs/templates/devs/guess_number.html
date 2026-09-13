@@ -1,0 +1,317 @@
+{% extends "devs/base.html" %}
+
+{% block title %}Guess the Number{% endblock %}
+
+{% block extra_css %}
+
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.10);
+    padding: 40px;
+    width: 100%;
+    max-width: 460px;
+}
+
+.card h2 {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.guess-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.guess-form input {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.guess-form input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+button.guess-btn {
+    padding: 12px 22px;
+    font-weight: 600;
+    color: #fff;
+    background: #667eea;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button.guess-btn:hover {
+    background: #5568d3;
+}
+
+.guess-range {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #999;
+    font-size: 14px;
+}
+
+.try-count {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.message {
+    border: 1px solid #eceef5;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.message.success {
+    color: #2e9e5b;
+    background: #f4fff8;
+}
+
+.message.error {
+    color: #c0392b;
+    background: #fff5f5;
+}
+
+.game-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.play-again-btn,
+.save-result-btn {
+    padding: 11px 20px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.play-again-btn {
+    background: #667eea;
+}
+
+.play-again-btn:hover {
+    background: #5568d3;
+}
+
+.save-result-btn {
+    background: #2e9e5b;
+}
+
+.save-result-btn:hover {
+    background: #25824b;
+}
+
+.save-form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eceef5;
+}
+
+.save-form input {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.save-form input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.save-submit {
+    width: 100%;
+    padding: 11px;
+    background: #2e9e5b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.save-submit:hover {
+    background: #25824b;
+}
+
+.save-info {
+    margin-top: 15px;
+    padding: 12px;
+    background: #f4fff8;
+    border: 1px solid #d5f0df;
+    border-radius: 8px;
+    text-align: center;
+    color: #2e9e5b;
+    font-size: 14px;
+}
+
+.game-result {
+    margin-bottom: 20px;
+    padding: 14px;
+    background: #f4f6fc;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.game-result div {
+    margin: 5px 0;
+}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <h2>Guess the Number</h2>
+
+    {% if not game_finished %}
+
+        <form method="POST" class="guess-form">
+            {% csrf_token %}
+
+            <input
+                type="number"
+                name="guess"
+                id="guessInput"
+                min="1"
+                max="50"
+                placeholder="Enter your guess"
+                required
+                autofocus
+            >
+
+            <button type="submit" name="action" value="guess" class="guess-btn">
+                Guess
+            </button>
+        </form>
+
+        <div class="guess-range">
+            Lucky number is between 1 and 50
+        </div>
+
+    {% endif %}
+
+    {% if try_count > 0 and not success %}
+        <div class="try-count">
+            Attempts: {{ try_count }}
+        </div>
+    {% endif %}
+
+    {% if message %}
+        <div class="message {% if success %}success{% else %}error{% endif %}">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    {% if game_finished %}
+
+        <div class="game-result">
+            <div>
+                Lucky Number:
+                <strong>{{ lucky_num }}</strong>
+            </div>
+
+            <div>
+                Attempts:
+                <strong>{{ try_count }}</strong>
+            </div>
+        </div>
+
+        <div class="game-buttons">
+
+            <form method="POST">
+                {% csrf_token %}
+                <button
+                    type="submit"
+                    name="action"
+                    value="play_again"
+                    class="play-again-btn"
+                >
+                    Play Again
+                </button>
+            </form>
+
+            <button
+                type="button"
+                class="save-result-btn"
+                onclick="document.getElementById('saveForm').style.display='block'; this.style.display='none';"
+            >
+                Save Result
+            </button>
+
+        </div>
+
+        <form method="POST" class="save-form" id="saveForm" style="display:none;">
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="user_name"
+                placeholder="Your name"
+                required
+            >
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Email address (optional)"
+            >
+
+            <input
+                type="text"
+                value="Lucky Number: {{ lucky_num }}"
+                readonly
+            >
+
+            <input
+                type="text"
+                value="Attempts: {{ try_count }}"
+                readonly
+            >
+
+            <button
+                type="submit"
+                name="action"
+                value="save_result"
+                class="save-submit"
+            >
+                Save Game Result
+            </button>
+        </form>
+
+    {% endif %}
+
+    {% if save_message %}
+        <div class="save-info">
+            {{ save_message }}
+        </div>
+    {% endif %}
+
+</div>
+
+{% if clear_input %}
+<script>
+    document.getElementById("guessInput").value = "";
+    document.getElementById("guessInput").focus();
+</script>
+{% endif %}
+
+{% endblock %}

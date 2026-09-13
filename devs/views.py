@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import mysql.connector
+import random
 
 def get_connection():
     return mysql.connector.connect(
@@ -18,12 +19,11 @@ def search_developer(request):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    # all developers for the dropdown
     cursor.execute("SELECT ID, NAME FROM PY_DEVELOPER_INFO ORDER BY ID")
     all_devs = cursor.fetchall()
 
-    # the selected developer's details (if one was chosen)
     dev = None
+
     if selected_id:
         cursor.execute(
             "SELECT * FROM PY_DEVELOPER_INFO WHERE ID = %s", (selected_id,)
@@ -38,3 +38,142 @@ def search_developer(request):
         "dev": dev,
         "selected_id": selected_id,
     })
+
+def guess_number(request):
+
+    if "lucky_number" not in request.session:
+        request.session["lucky_number"] = random.randint(1, 50)
+        request.session["try_count"] = 0
+
+    message = ""
+    success = False
+    clear_input = False
+    game_finished = False
+    save_message = ""
+
+    lucky_num = request.session["lucky_number"]
+    try_count = request.session.get("try_count", 0)
+
+    if request.method == "POST":
+
+        action = request.POST.get("action")
+
+        if action == "guess":
+
+            try:
+                user_num = int(request.POST.get("guess"))
+
+                if user_num < 1 or user_num > 50:
+                    message = "Please enter a number between 1 and 50."
+                    clear_input = True
+
+                else:
+                    try_count += 1
+                    request.session["try_count"] = try_count
+
+                    if user_num == lucky_num:
+
+                        message = (
+                            f"Congratulations! You guessed the lucky number "
+                            f"{lucky_num} in {try_count} attempts!"
+                        )
+
+                        success = True
+                        game_finished = True
+
+                    elif user_num < lucky_num:
+
+                        message = (
+                            f"Too low! Attempts: {try_count}"
+                        )
+
+                        clear_input = True
+
+                    else:
+
+                        message = (
+                            f"Too high! Attempts: {try_count}"
+                        )
+
+                        clear_input = True
+
+            except (TypeError, ValueError):
+
+                message = "Please enter a valid number."
+                clear_input = True
+
+        elif action == "play_again":
+
+            request.session["lucky_number"] = random.randint(1, 50)
+            request.session["try_count"] = 0
+
+            lucky_num = request.session["lucky_number"]
+            try_count = 0
+
+            message = ""
+            success = False
+            game_finished = False
+
+        elif action == "save_result":
+
+            user_name = request.POST.get("user_name", "").strip()
+            email = request.POST.get("email", "").strip()
+
+            if not user_name:
+
+                message = "User name is required."
+                success = False
+                game_finished = True
+
+            else:
+
+                conn = get_connection()
+                cursor = conn.cursor()
+
+                cursor.execute(
+                    """
+                    INSERT INTO PY_GUESS_GAME_RESULT
+                    (
+                        USER_NAME,
+                        EMAIL,
+                        LUCKY_NUMBER,
+                        TRY_COUNT
+                    )
+                    VALUES (%s, %s, %s, %s)
+                    """,
+                    (
+                        user_name,
+                        email if email else None,
+                        lucky_num,
+                        try_count
+                    )
+                )
+
+                conn.commit()
+
+                cursor.close()
+                conn.close()
+
+                save_message = "Your game result has been saved successfully."
+
+                message = (
+                    f"Congratulations! Lucky number was {lucky_num}. "
+                    f"You matched it in {try_count} attempts."
+                )
+
+                success = True
+                game_finished = True
+
+    return render(
+        request,
+        "devs/guess_number.html",
+        {
+            "message": message,
+            "success": success,
+            "clear_input": clear_input,
+            "game_finished": game_finished,
+            "try_count": try_count,
+            "lucky_num": lucky_num,
+            "save_message": save_message,
+        }
+    )
