@@ -1,6 +1,8 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator
 import mysql.connector
 import random
+
 
 def get_connection():
     return mysql.connector.connect(
@@ -10,8 +12,10 @@ def get_connection():
         database="TEST_PYTHON"
     )
 
+
 def hello(request):
     return render(request, "devs/home.html")
+
 
 def search_developer(request):
     selected_id = request.GET.get("dev_id")
@@ -26,7 +30,8 @@ def search_developer(request):
 
     if selected_id:
         cursor.execute(
-            "SELECT * FROM PY_DEVELOPER_INFO WHERE ID = %s", (selected_id,)
+            "SELECT * FROM PY_DEVELOPER_INFO WHERE ID = %s",
+            (selected_id,)
         )
         dev = cursor.fetchone()
 
@@ -39,11 +44,13 @@ def search_developer(request):
         "selected_id": selected_id,
     })
 
+
 def guess_number(request):
 
     if "lucky_number" not in request.session:
         request.session["lucky_number"] = random.randint(1, 50)
         request.session["try_count"] = 0
+        request.session["game_saved"] = False
 
     message = ""
     success = False
@@ -53,6 +60,7 @@ def guess_number(request):
 
     lucky_num = request.session["lucky_number"]
     try_count = request.session.get("try_count", 0)
+    game_saved = request.session.get("game_saved", False)
 
     if request.method == "POST":
 
@@ -64,10 +72,12 @@ def guess_number(request):
                 user_num = int(request.POST.get("guess"))
 
                 if user_num < 1 or user_num > 50:
+
                     message = "Please enter a number between 1 and 50."
                     clear_input = True
 
                 else:
+
                     try_count += 1
                     request.session["try_count"] = try_count
 
@@ -83,18 +93,12 @@ def guess_number(request):
 
                     elif user_num < lucky_num:
 
-                        message = (
-                            f"Too low! Attempts: {try_count}"
-                        )
-
+                        message = f"Too low! Attempts: {try_count}"
                         clear_input = True
 
                     else:
 
-                        message = (
-                            f"Too high! Attempts: {try_count}"
-                        )
-
+                        message = f"Too high! Attempts: {try_count}"
                         clear_input = True
 
             except (TypeError, ValueError):
@@ -106,9 +110,11 @@ def guess_number(request):
 
             request.session["lucky_number"] = random.randint(1, 50)
             request.session["try_count"] = 0
+            request.session["game_saved"] = False
 
             lucky_num = request.session["lucky_number"]
             try_count = 0
+            game_saved = False
 
             message = ""
             success = False
@@ -116,53 +122,93 @@ def guess_number(request):
 
         elif action == "save_result":
 
-            user_name = request.POST.get("user_name", "").strip()
-            email = request.POST.get("email", "").strip()
+            if game_saved:
 
-            if not user_name:
-
-                message = "User name is required."
+                message = "This game result has already been saved."
                 success = False
                 game_finished = True
 
             else:
 
-                conn = get_connection()
-                cursor = conn.cursor()
+                user_name = request.POST.get("user_name", "").strip()
+                email = request.POST.get("email", "").strip()
 
-                cursor.execute(
-                    """
-                    INSERT INTO PY_GUESS_GAME_RESULT
-                    (
-                        USER_NAME,
-                        EMAIL,
-                        LUCKY_NUMBER,
-                        TRY_COUNT
+                if not user_name:
+
+                    message = "User name is required."
+                    success = False
+                    game_finished = True
+
+                else:
+
+                    conn = get_connection()
+                    cursor = conn.cursor()
+
+                    cursor.execute(
+                        """
+                        INSERT INTO PY_GUESS_GAME_RESULT
+                        (
+                            USER_NAME,
+                            EMAIL,
+                            LUCKY_NUMBER,
+                            TRY_COUNT
+                        )
+                        VALUES (%s, %s, %s, %s)
+                        """,
+                        (
+                            user_name,
+                            email if email else None,
+                            lucky_num,
+                            try_count
+                        )
                     )
-                    VALUES (%s, %s, %s, %s)
-                    """,
-                    (
-                        user_name,
-                        email if email else None,
-                        lucky_num,
-                        try_count
+
+                    conn.commit()
+
+                    cursor.close()
+                    conn.close()
+
+                    request.session["game_saved"] = True
+                    game_saved = True
+
+                    save_message = (
+                        "Your game result has been saved successfully."
                     )
-                )
 
-                conn.commit()
+                    message = (
+                        f"Congratulations! Lucky number was {lucky_num}. "
+                        f"You matched it in {try_count} attempts."
+                    )
 
-                cursor.close()
-                conn.close()
+                    success = True
+                    game_finished = True
 
-                save_message = "Your game result has been saved successfully."
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
 
-                message = (
-                    f"Congratulations! Lucky number was {lucky_num}. "
-                    f"You matched it in {try_count} attempts."
-                )
+    cursor.execute(
+        """
+        SELECT
+            ID,
+            USER_NAME,
+            EMAIL,
+            LUCKY_NUMBER,
+            TRY_COUNT,
+            CREATED_AT
+        FROM PY_GUESS_GAME_RESULT
+        ORDER BY ID DESC
+        """
+    )
 
-                success = True
-                game_finished = True
+    saved_results = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    paginator = Paginator(saved_results, 25)
+
+    page_number = request.GET.get("page")
+    results_page = paginator.get_page(page_number)
 
     return render(
         request,
@@ -175,5 +221,7 @@ def guess_number(request):
             "try_count": try_count,
             "lucky_num": lucky_num,
             "save_message": save_message,
+            "game_saved": game_saved,
+            "results_page": results_page,
         }
     )

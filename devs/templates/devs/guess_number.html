@@ -4,95 +4,147 @@
 
 {% block extra_css %}
 
-.card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.10);
-    padding: 40px;
-    width: 100%;
-    max-width: 460px;
-}
-
-.card h2 {
-    text-align: center;
-    margin-bottom: 24px;
-}
-
-.guess-form {
+.guess-page {
+    min-height: calc(100vh - 160px);
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
 }
 
-.guess-form input {
-    flex: 1;
-    padding: 12px;
-    font-size: 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+.guess-container {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 430px 1fr;
+    gap: 25px;
+    align-items: start;
 }
 
-.guess-form input:focus {
-    border-color: #667eea;
-    outline: none;
+.guess-card,
+.result-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
 }
 
-button.guess-btn {
-    padding: 12px 22px;
-    font-weight: 600;
-    color: #fff;
-    background: #667eea;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-button.guess-btn:hover {
-    background: #5568d3;
-}
-
-.guess-range {
+.guess-card {
+    padding: 40px;
     text-align: center;
-    margin-bottom: 24px;
-    color: #999;
+}
+
+.guess-card h1 {
+    margin-bottom: 12px;
+    color: #0f172a;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.guess-description {
+    margin-bottom: 6px;
+    color: #475569;
+    font-size: 16px;
+}
+
+.guess-hint {
+    margin-bottom: 28px;
+    color: #64748b;
     font-size: 14px;
 }
 
-.try-count {
+.guess-input {
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    outline: none;
+    font-size: 17px;
     text-align: center;
-    margin-bottom: 20px;
-    color: #667eea;
+    color: #0f172a;
+    background: #f8fafc;
+    box-sizing: border-box;
+}
+
+.guess-input:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.guess-btn {
+    width: 100%;
+    height: 50px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.guess-btn:hover {
+    background: #1d4ed8;
+}
+
+.guess-range {
+    margin-top: 20px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+.try-count {
+    margin-top: 20px;
+    color: #2563eb;
     font-weight: 600;
 }
 
 .message {
-    border: 1px solid #eceef5;
+    margin-top: 22px;
+    padding: 14px 16px;
     border-radius: 10px;
-    padding: 18px;
     text-align: center;
-    font-style: italic;
-    margin-bottom: 20px;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .message.success {
-    color: #2e9e5b;
-    background: #f4fff8;
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
 }
 
 .message.error {
-    color: #c0392b;
-    background: #fff5f5;
+    color: #b91c1c;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+}
+
+.game-result {
+    margin-top: 20px;
+    padding: 14px;
+    background: #f4f6fc;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.game-result div {
+    margin: 5px 0;
 }
 
 .game-buttons {
     display: flex;
     gap: 10px;
     justify-content: center;
+    margin-top: 20px;
 }
 
 .play-again-btn,
 .save-result-btn {
-    padding: 11px 20px;
+    padding: 11px 18px;
     font-weight: 600;
     color: #fff;
     border: none;
@@ -129,11 +181,7 @@ button.guess-btn:hover {
     font-size: 14px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
-}
-
-.save-form input:focus {
-    border-color: #667eea;
-    outline: none;
+    box-sizing: border-box;
 }
 
 .save-submit {
@@ -147,10 +195,6 @@ button.guess-btn:hover {
     cursor: pointer;
 }
 
-.save-submit:hover {
-    background: #25824b;
-}
-
 .save-info {
     margin-top: 15px;
     padding: 12px;
@@ -162,156 +206,459 @@ button.guess-btn:hover {
     font-size: 14px;
 }
 
-.game-result {
-    margin-bottom: 20px;
-    padding: 14px;
-    background: #f4f6fc;
-    border-radius: 10px;
-    text-align: center;
+.result-card {
+    padding: 25px;
 }
 
-.game-result div {
-    margin: 5px 0;
+.result-card h2 {
+    margin: 0 0 20px;
+    color: #0f172a;
+    font-size: 22px;
+}
+
+.result-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.result-table th {
+    padding: 11px 8px;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.result-table td {
+    padding: 11px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+    white-space: nowrap;
+}
+
+.result-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.pagination a,
+.pagination span {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+.pagination a {
+    color: #2563eb;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+}
+
+.pagination a:hover {
+    background: #eff6ff;
+}
+
+.pagination .current {
+    color: #fff;
+    background: #2563eb;
+    border: 1px solid #2563eb;
+}
+
+.pagination .disabled {
+    color: #94a3b8;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.no-results {
+    padding: 30px 10px;
+    text-align: center;
+    color: #94a3b8;
+}
+
+@media (max-width: 900px) {
+
+    .guess-container {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .guess-page {
+        padding: 20px 10px;
+    }
+
+    .guess-card,
+    .result-card {
+        padding: 20px;
+    }
+
+    .game-buttons {
+        flex-direction: column;
+    }
+
 }
 
 {% endblock %}
 
 {% block content %}
 
-<div class="card">
+<div class="guess-page">
 
-    <h2>Guess the Number</h2>
+    <div class="guess-container">
 
-    {% if not game_finished %}
+        <div class="guess-card">
 
-        <form method="POST" class="guess-form">
-            {% csrf_token %}
+            <h1>Guess the Number</h1>
 
-            <input
-                type="number"
-                name="guess"
-                id="guessInput"
-                min="1"
-                max="50"
-                placeholder="Enter your guess"
-                required
-                autofocus
-            >
-
-            <button type="submit" name="action" value="guess" class="guess-btn">
-                Guess
-            </button>
-        </form>
-
-        <div class="guess-range">
-            Lucky number is between 1 and 50
-        </div>
-
-    {% endif %}
-
-    {% if try_count > 0 and not success %}
-        <div class="try-count">
-            Attempts: {{ try_count }}
-        </div>
-    {% endif %}
-
-    {% if message %}
-        <div class="message {% if success %}success{% else %}error{% endif %}">
-            {{ message }}
-        </div>
-    {% endif %}
-
-    {% if game_finished %}
-
-        <div class="game-result">
-            <div>
-                Lucky Number:
-                <strong>{{ lucky_num }}</strong>
+            <div class="guess-description">
+                Try to guess the <strong>lucky number</strong>
             </div>
 
-            <div>
-                Attempts:
-                <strong>{{ try_count }}</strong>
+            <div class="guess-hint">
+                Enter a number between 1 and 50
             </div>
+
+            {% if not game_finished %}
+
+                <form method="POST" class="guess-form">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="number"
+                        name="guess"
+                        id="guessInput"
+                        class="guess-input"
+                        min="1"
+                        max="50"
+                        placeholder="Enter your guess"
+                        required
+                        autofocus
+                    >
+
+                    <button
+                        type="submit"
+                        name="action"
+                        value="guess"
+                        class="guess-btn"
+                    >
+                        Guess
+                    </button>
+
+                </form>
+
+                <div class="guess-range">
+                    Lucky number is between 1 and 50
+                </div>
+
+            {% endif %}
+
+            {% if try_count > 0 and not success %}
+
+                <div class="try-count">
+                    Attempts: {{ try_count }}
+                </div>
+
+            {% endif %}
+
+            {% if message %}
+
+                <div class="message {% if success %}success{% else %}error{% endif %}">
+                    {{ message }}
+                </div>
+
+            {% endif %}
+
+            {% if game_finished %}
+
+                <div class="game-result">
+
+                    <div>
+                        Lucky Number:
+                        <strong>{{ lucky_num }}</strong>
+                    </div>
+
+                    <div>
+                        Attempts:
+                        <strong>{{ try_count }}</strong>
+                    </div>
+
+                </div>
+
+                <div class="game-buttons">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="play_again"
+                            class="play-again-btn"
+                        >
+                            Play Again
+                        </button>
+
+                    </form>
+
+                    {% if not game_saved %}
+
+                        <button
+                            type="button"
+                            class="save-result-btn"
+                            onclick="document.getElementById('saveForm').style.display='block'; this.style.display='none';"
+                        >
+                            Save Result
+                        </button>
+
+                    {% endif %}
+
+                </div>
+
+                {% if not game_saved %}
+
+                    <form
+                        method="POST"
+                        class="save-form"
+                        id="saveForm"
+                        style="display:none;"
+                    >
+
+                        {% csrf_token %}
+
+                        <input
+                            type="text"
+                            name="user_name"
+                            placeholder="Your name"
+                            required
+                        >
+
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email address (optional)"
+                        >
+
+                        <input
+                            type="text"
+                            value="Lucky Number: {{ lucky_num }}"
+                            readonly
+                        >
+
+                        <input
+                            type="text"
+                            value="Attempts: {{ try_count }}"
+                            readonly
+                        >
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="save_result"
+                            class="save-submit"
+                        >
+                            Save Game Result
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            {% endif %}
+
+            {% if save_message %}
+
+                <div class="save-info">
+                    {{ save_message }}
+                </div>
+
+            {% endif %}
+
         </div>
 
-        <div class="game-buttons">
 
-            <form method="POST">
-                {% csrf_token %}
-                <button
-                    type="submit"
-                    name="action"
-                    value="play_again"
-                    class="play-again-btn"
-                >
-                    Play Again
-                </button>
-            </form>
+        <div class="result-card">
 
-            <button
-                type="button"
-                class="save-result-btn"
-                onclick="document.getElementById('saveForm').style.display='block'; this.style.display='none';"
-            >
-                Save Result
-            </button>
+            <h2>Saved Game Results</h2>
+
+            {% if results_page.object_list %}
+
+                <div class="result-table-wrapper">
+
+                    <table class="result-table">
+
+                        <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Lucky Number</th>
+                                <th>Attempts</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for result in results_page %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ results_page.start_index|add:forloop.counter0 }}
+                                    </td>
+
+                                    <td>{{ result.USER_NAME }}</td>
+
+                                    <td>
+                                        {% if result.EMAIL %}
+                                            {{ result.EMAIL }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{ result.LUCKY_NUMBER }}</td>
+
+                                    <td>{{ result.TRY_COUNT }}</td>
+
+                                    <td>
+                                        {{ result.CREATED_AT|date:"d-m-Y H:i" }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                {% if results_page.paginator.num_pages > 1 %}
+
+                    <div class="pagination">
+
+                        {% if results_page.has_previous %}
+
+                            <a href="?page=1">
+                                First
+                            </a>
+
+                            <a href="?page={{ results_page.previous_page_number }}">
+                                Previous
+                            </a>
+
+                        {% else %}
+
+                            <span class="disabled">
+                                First
+                            </span>
+
+                            <span class="disabled">
+                                Previous
+                            </span>
+
+                        {% endif %}
+
+
+                        {% for num in results_page.paginator.page_range %}
+
+                            {% if num == results_page.number %}
+
+                                <span class="current">
+                                    {{ num }}
+                                </span>
+
+                            {% elif num > results_page.number|add:'-2' and num < results_page.number|add:'2' %}
+
+                                <a href="?page={{ num }}">
+                                    {{ num }}
+                                </a>
+
+                            {% endif %}
+
+                        {% endfor %}
+
+
+                        {% if results_page.has_next %}
+
+                            <a href="?page={{ results_page.next_page_number }}">
+                                Next
+                            </a>
+
+                            <a href="?page={{ results_page.paginator.num_pages }}">
+                                Last
+                            </a>
+
+                        {% else %}
+
+                            <span class="disabled">
+                                Next
+                            </span>
+
+                            <span class="disabled">
+                                Last
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+            {% else %}
+
+                <div class="no-results">
+                    No saved game results yet.
+                </div>
+
+            {% endif %}
 
         </div>
 
-        <form method="POST" class="save-form" id="saveForm" style="display:none;">
-            {% csrf_token %}
-
-            <input
-                type="text"
-                name="user_name"
-                placeholder="Your name"
-                required
-            >
-
-            <input
-                type="email"
-                name="email"
-                placeholder="Email address (optional)"
-            >
-
-            <input
-                type="text"
-                value="Lucky Number: {{ lucky_num }}"
-                readonly
-            >
-
-            <input
-                type="text"
-                value="Attempts: {{ try_count }}"
-                readonly
-            >
-
-            <button
-                type="submit"
-                name="action"
-                value="save_result"
-                class="save-submit"
-            >
-                Save Game Result
-            </button>
-        </form>
-
-    {% endif %}
-
-    {% if save_message %}
-        <div class="save-info">
-            {{ save_message }}
-        </div>
-    {% endif %}
+    </div>
 
 </div>
 
+
 {% if clear_input %}
+
 <script>
+
     document.getElementById("guessInput").value = "";
     document.getElementById("guessInput").focus();
+
 </script>
+
 {% endif %}
 
 {% endblock %}
