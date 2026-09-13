@@ -519,7 +519,21 @@
                                 <th>User Name</th>
                                 <th>Email</th>
                                 <th>Lucky Number</th>
-                                <th>Attempts</th>
+                                <th>
+                                    {% if sort == "default" %}
+                                        <a href="?sort=attempts_asc">
+                                            Attempts
+                                        </a>
+                                    {% elif sort == "attempts_asc" %}
+                                        <a href="?sort=attempts_desc">
+                                            Attempts ▲
+                                        </a>
+                                    {% else %}
+                                        <a href="?sort=default">
+                                            Attempts ▼
+                                        </a>
+                                    {% endif %}
+                                </th>
                                 <th>Date</th>
                             </tr>
                         </thead>

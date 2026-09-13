@@ -93,12 +93,12 @@ def guess_number(request):
 
                     elif user_num < lucky_num:
 
-                        message = f"Too low! Attempts: {try_count}"
+                        message = f"Lucky number is lower than your guess! Try again, Attempts: {try_count}"
                         clear_input = True
 
                     else:
 
-                        message = f"Too high! Attempts: {try_count}"
+                        message = f"Lucky number is higher than your guess! Try again, Attempts: {try_count}"
                         clear_input = True
 
             except (TypeError, ValueError):
@@ -186,8 +186,18 @@ def guess_number(request):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
+    sort = request.GET.get("sort", "default")
+
+    if sort == "attempts_asc":
+        order_by = "TRY_COUNT ASC, CREATED_AT ASC"
+    elif sort == "attempts_desc":
+        order_by = "TRY_COUNT DESC, CREATED_AT ASC"
+    else:
+        sort = "default"
+        order_by = "ID DESC"
+
     cursor.execute(
-        """
+        f"""
         SELECT
             ID,
             USER_NAME,
@@ -196,7 +206,7 @@ def guess_number(request):
             TRY_COUNT,
             CREATED_AT
         FROM PY_GUESS_GAME_RESULT
-        ORDER BY ID DESC
+        ORDER BY {order_by}
         """
     )
 
@@ -223,5 +233,6 @@ def guess_number(request):
             "save_message": save_message,
             "game_saved": game_saved,
             "results_page": results_page,
+            "sort": sort,
         }
     )
