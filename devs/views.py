@@ -205,7 +205,7 @@ def guess_number(request):
     cursor.close()
     conn.close()
 
-    paginator = Paginator(saved_results, 25)
+    paginator = Paginator(saved_results, 10)
 
     page_number = request.GET.get("page")
     results_page = paginator.get_page(page_number)
