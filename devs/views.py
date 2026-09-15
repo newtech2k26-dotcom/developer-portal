@@ -1,8 +1,19 @@
-from django.shortcuts import render
+# =====================================================
+# Imports
+# =====================================================
+
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 import mysql.connector
 import random
+import string
 
+
+# =====================================================
+# Database Connection
+# =====================================================
 
 def get_connection():
     return mysql.connector.connect(
@@ -13,75 +24,151 @@ def get_connection():
     )
 
 
+# =====================================================
+# Home
+# =====================================================
+
+@login_required
 def hello(request):
     return render(request, "devs/home.html")
+
+
+# =====================================================
+# User Login
+# =====================================================
+
+def user_login(request):
+
+    if request.user.is_authenticated:
+        return redirect("hello")
+
+    if request.method == "POST":
+
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None:
+
+            if user.is_active:
+                login(request, user)
+
+                return redirect("hello")
+
+        return render(
+            request,
+            "devs/login.html",
+            {
+                "error": "Invalid username or password."
+            }
+        )
+
+    return render(
+        request,
+        "devs/login.html"
+    )
+
+
+# =====================================================
+# User Logout
+# =====================================================
+
+def user_logout(request):
+
+    logout(request)
+
+    return redirect("login")
+
 
 # =====================================================
 # Developer Info
 # =====================================================
+
+@login_required
 def search_developer(request):
+
     selected_id = request.GET.get("dev_id")
 
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("SELECT ID, NAME FROM PY_DEVELOPER_INFO ORDER BY ID")
+    cursor.execute(
+        "SELECT ID, NAME FROM PY_DEVELOPER_INFO ORDER BY ID"
+    )
+
     all_devs = cursor.fetchall()
 
     dev = None
 
     if selected_id:
+
         cursor.execute(
             "SELECT * FROM PY_DEVELOPER_INFO WHERE ID = %s",
             (selected_id,)
         )
+
         dev = cursor.fetchone()
 
     cursor.close()
     conn.close()
 
-    return render(request, "devs/search.html", {
-        "all_devs": all_devs,
-        "dev": dev,
-        "selected_id": selected_id,
-    })
+    return render(
+        request,
+        "devs/search.html",
+        {
+            "all_devs": all_devs,
+            "dev": dev,
+            "selected_id": selected_id,
+        }
+    )
+
 
 # =====================================================
-    # Guess the number
+# Guess the Number
 # =====================================================
+
+@login_required
 def guess_number(request):
-
-    
 
     if "lucky_number" not in request.session:
 
         request.session["lucky_number"] = random.randint(1, 50)
-
         request.session["try_count"] = 0
-
         request.session["game_saved"] = False
-
         request.session["game_finished"] = False
-
         request.session["game_started"] = False
 
     message = ""
-
     success = False
-
     clear_input = False
-
     save_message = ""
 
     lucky_num = request.session["lucky_number"]
 
-    try_count = request.session.get("try_count", 0)
+    try_count = request.session.get(
+        "try_count",
+        0
+    )
 
-    game_saved = request.session.get("game_saved", False)
+    game_saved = request.session.get(
+        "game_saved",
+        False
+    )
 
-    game_finished = request.session.get("game_finished", False)
+    game_finished = request.session.get(
+        "game_finished",
+        False
+    )
 
-    game_started = request.session.get("game_started", False)
+    game_started = request.session.get(
+        "game_started",
+        False
+    )
 
     if request.method == "POST":
 
@@ -90,9 +177,7 @@ def guess_number(request):
         if action == "guess":
 
             request.session["game_started"] = True
-
             game_started = True
-
 
             try:
 
@@ -108,7 +193,6 @@ def guess_number(request):
 
                     clear_input = True
 
-
                 else:
 
                     try_count += 1
@@ -123,7 +207,6 @@ def guess_number(request):
                         )
 
                         success = True
-
                         game_finished = True
 
                         request.session["game_finished"] = True
@@ -146,69 +229,43 @@ def guess_number(request):
 
                         clear_input = True
 
-
             except (TypeError, ValueError):
 
                 message = "Please enter a valid number."
-
                 clear_input = True
 
         elif action == "play_again":
 
             request.session["lucky_number"] = random.randint(1, 50)
-
             request.session["try_count"] = 0
-
             request.session["game_saved"] = False
-
             request.session["game_finished"] = False
-
             request.session["game_started"] = False
 
-
             lucky_num = request.session["lucky_number"]
-
             try_count = 0
-
             game_saved = False
-
             game_finished = False
-
             game_started = False
-
             message = ""
-
             success = False
-
             clear_input = False
 
         elif action == "reset_lucky_number":
 
             request.session["lucky_number"] = random.randint(1, 50)
-
             request.session["try_count"] = 0
-
             request.session["game_saved"] = False
-
             request.session["game_finished"] = False
-
             request.session["game_started"] = False
 
-
             lucky_num = request.session["lucky_number"]
-
             try_count = 0
-
             game_saved = False
-
             game_finished = False
-
             game_started = False
-
             message = ""
-
             success = False
-
             clear_input = False
 
         elif action == "save_result":
@@ -220,9 +277,7 @@ def guess_number(request):
                 )
 
                 success = False
-
                 game_finished = True
-
 
             else:
 
@@ -236,22 +291,16 @@ def guess_number(request):
                     ""
                 ).strip()
 
-
                 if not user_name:
 
                     message = "User name is required."
-
                     success = False
-
                     game_finished = True
-
 
                 else:
 
                     conn = get_connection()
-
                     cursor = conn.cursor()
-
 
                     cursor.execute(
                         """
@@ -272,23 +321,17 @@ def guess_number(request):
                         )
                     )
 
-
                     conn.commit()
 
                     cursor.close()
-
                     conn.close()
 
-
                     request.session["game_saved"] = True
-
                     game_saved = True
-
 
                     save_message = (
                         "Your game result has been saved successfully."
                     )
-
 
                     message = (
                         f"Congratulations! Lucky number was {lucky_num}. "
@@ -296,18 +339,15 @@ def guess_number(request):
                     )
 
                     success = True
-
                     game_finished = True
 
     conn = get_connection()
-
     cursor = conn.cursor(dictionary=True)
 
     sort = request.GET.get(
         "sort",
         "default"
     )
-
 
     if sort == "attempts_asc":
 
@@ -316,7 +356,6 @@ def guess_number(request):
             "CREATED_AT ASC"
         )
 
-
     elif sort == "attempts_desc":
 
         order_by = (
@@ -324,11 +363,9 @@ def guess_number(request):
             "CREATED_AT ASC"
         )
 
-
     else:
 
         sort = "default"
-
         order_by = "ID DESC"
 
     cursor.execute(
@@ -345,12 +382,9 @@ def guess_number(request):
         """
     )
 
-
     saved_results = cursor.fetchall()
 
-
     cursor.close()
-
     conn.close()
 
     paginator = Paginator(
@@ -358,11 +392,9 @@ def guess_number(request):
         8
     )
 
-
     page_number = request.GET.get(
         "page"
     )
-
 
     results_page = paginator.get_page(
         page_number
@@ -373,34 +405,23 @@ def guess_number(request):
         "devs/guess_number.html",
         {
             "message": message,
-
             "success": success,
-
             "clear_input": clear_input,
-
             "game_finished": game_finished,
-
             "game_started": game_started,
-
             "try_count": try_count,
-
             "lucky_num": lucky_num,
-
             "save_message": save_message,
-
             "game_saved": game_saved,
-
             "results_page": results_page,
-
             "sort": sort,
         }
     )
 
+
 # =====================================================
 # Password Analysis
 # =====================================================
-import string
-
 
 def has_min_length(password):
     return len(password) >= 8
@@ -430,17 +451,19 @@ def has_sequence(password):
 
     sequences = []
 
-    # abc, bcd, cde, ..., xyz
     letters = string.ascii_lowercase
 
     for i in range(len(letters) - 2):
-        sequences.append(letters[i:i + 3])
+        sequences.append(
+            letters[i:i + 3]
+        )
 
-    # 012, 123, 234, ..., 789
     numbers = "0123456789"
 
     for i in range(len(numbers) - 2):
-        sequences.append(numbers[i:i + 3])
+        sequences.append(
+            numbers[i:i + 3]
+        )
 
     lower_password = password.lower()
 
@@ -502,6 +525,7 @@ def is_valid_pass(password):
     )
 
 
+@login_required
 def password_analyzer(request):
 
     context = {
@@ -522,7 +546,10 @@ def password_analyzer(request):
 
     if request.method == "POST":
 
-        password = request.POST.get("password", "")
+        password = request.POST.get(
+            "password",
+            ""
+        )
 
         min_length = has_min_length(password)
         uppercase = has_uppercase(password)
@@ -532,41 +559,44 @@ def password_analyzer(request):
         repeated = has_repeated_char(password)
         sequence = has_sequence(password)
 
-
         score = calculate_score(password)
 
-
         strength = get_strength(score)
-
 
         requirements = []
 
         if not min_length:
+
             requirements.append(
                 "Your password must contain at least 8 characters."
             )
 
         if not uppercase:
+
             requirements.append(
                 "Your password must contain an uppercase letter."
             )
 
         if not lowercase:
+
             requirements.append(
                 "Your password must contain a lowercase letter."
             )
 
         if not number:
+
             requirements.append(
                 "Your password must contain a number."
             )
 
         if not special:
+
             requirements.append(
                 "Your password must contain a special character."
             )
 
         if sequence:
+
             requirements.append(
                 "Avoid common sequences such as 123 or abc."
             )
@@ -585,14 +615,9 @@ def password_analyzer(request):
         else:
             password_value = password
 
-
         context = {
             "analyzed": True,
-
-            # Keep password when invalid.
-            # Clear password when valid.
             "password": password_value,
-
             "password_min_length": min_length,
             "password_uppercase": uppercase,
             "password_lowercase": lowercase,
@@ -600,12 +625,9 @@ def password_analyzer(request):
             "password_special": special,
             "password_repeated": repeated,
             "password_sequence": sequence,
-
             "score": score,
             "strength": strength,
-
             "requirements": requirements,
-
             "success": valid,
         }
 

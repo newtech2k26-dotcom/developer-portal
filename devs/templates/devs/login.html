@@ -1,0 +1,60 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Login</title>
+
+    <link rel="stylesheet"
+          href="{% static 'devs/developer.css' %}">
+
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h2>Login</h2>
+
+        {% if error %}
+            <div class="login-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div>
+                <label>Username</label>
+
+                <input
+                    type="text"
+                    name="username"
+                    required
+                    autofocus
+                >
+            </div>
+
+            <div>
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    required
+                >
+            </div>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>
