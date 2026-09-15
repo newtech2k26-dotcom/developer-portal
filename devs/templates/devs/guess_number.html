@@ -2,7 +2,14 @@
 
 {% block title %}Guess the Number{% endblock %}
 
-{% block extra_css %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   GUESS NUMBER PAGE
+========================================================= */
 
 .guess-page {
     min-height: calc(100vh - 160px);
@@ -11,6 +18,11 @@
     align-items: flex-start;
     padding: 40px 20px;
 }
+
+
+/* =========================================================
+   MAIN CONTAINER
+========================================================= */
 
 .guess-container {
     width: 100%;
@@ -21,6 +33,11 @@
     align-items: start;
 }
 
+
+/* =========================================================
+   CARDS
+========================================================= */
+
 .guess-card,
 .result-card {
     background: #ffffff;
@@ -28,6 +45,11 @@
     border: 1px solid #e2e8f0;
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
 }
+
+
+/* =========================================================
+   GUESS CARD
+========================================================= */
 
 .guess-card {
     padding: 40px;
@@ -53,6 +75,11 @@
     font-size: 14px;
 }
 
+
+/* =========================================================
+   GUESS INPUT
+========================================================= */
+
 .guess-input {
     width: 100%;
     height: 52px;
@@ -73,6 +100,11 @@
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
+
+/* =========================================================
+   GUESS BUTTON
+========================================================= */
+
 .guess-btn {
     width: 100%;
     height: 50px;
@@ -90,17 +122,32 @@
     background: #1d4ed8;
 }
 
+
+/* =========================================================
+   RANGE
+========================================================= */
+
 .guess-range {
     margin-top: 20px;
     color: #64748b;
     font-size: 13px;
 }
 
+
+/* =========================================================
+   ATTEMPTS
+========================================================= */
+
 .try-count {
     margin-top: 20px;
     color: #2563eb;
     font-weight: 600;
 }
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
 
 .message {
     margin-top: 22px;
@@ -123,6 +170,11 @@
     border: 1px solid #fecaca;
 }
 
+
+/* =========================================================
+   GAME RESULT
+========================================================= */
+
 .game-result {
     margin-top: 20px;
     padding: 14px;
@@ -135,6 +187,11 @@
     margin: 5px 0;
 }
 
+
+/* =========================================================
+   GAME BUTTONS
+========================================================= */
+
 .game-buttons {
     display: flex;
     gap: 10px;
@@ -146,11 +203,16 @@
 .save-result-btn {
     padding: 11px 18px;
     font-weight: 600;
-    color: #fff;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
 }
+
+
+/* =========================================================
+   PLAY AGAIN
+========================================================= */
 
 .play-again-btn {
     background: #667eea;
@@ -160,6 +222,11 @@
     background: #5568d3;
 }
 
+
+/* =========================================================
+   SAVE RESULT
+========================================================= */
+
 .save-result-btn {
     background: #2e9e5b;
 }
@@ -167,6 +234,37 @@
 .save-result-btn:hover {
     background: #25824b;
 }
+
+
+/* =========================================================
+   RESET LUCKY NUMBER
+========================================================= */
+
+.reset-form {
+    margin-top: 10px;
+}
+
+.reset-lucky-btn {
+    width: 100%;
+    height: 45px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.reset-lucky-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+
+/* =========================================================
+   SAVE FORM
+========================================================= */
 
 .save-form {
     margin-top: 20px;
@@ -188,12 +286,21 @@
     width: 100%;
     padding: 11px;
     background: #2e9e5b;
-    color: #fff;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
 }
+
+.save-submit:hover {
+    background: #25824b;
+}
+
+
+/* =========================================================
+   SAVE MESSAGE
+========================================================= */
 
 .save-info {
     margin-top: 15px;
@@ -206,6 +313,11 @@
     font-size: 14px;
 }
 
+
+/* =========================================================
+   RESULT CARD
+========================================================= */
+
 .result-card {
     padding: 25px;
 }
@@ -215,6 +327,11 @@
     color: #0f172a;
     font-size: 22px;
 }
+
+
+/* =========================================================
+   RESULT TABLE
+========================================================= */
 
 .result-table-wrapper {
     width: 100%;
@@ -236,6 +353,15 @@
     white-space: nowrap;
 }
 
+.result-table th a {
+    color: #475569;
+    text-decoration: none;
+}
+
+.result-table th a:hover {
+    color: #2563eb;
+}
+
 .result-table td {
     padding: 11px 8px;
     border-bottom: 1px solid #e2e8f0;
@@ -246,6 +372,11 @@
 .result-table tbody tr:hover {
     background: #f8fafc;
 }
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
 
 .pagination {
     display: flex;
@@ -273,7 +404,7 @@
 .pagination a {
     color: #2563eb;
     border: 1px solid #cbd5e1;
-    background: #fff;
+    background: #ffffff;
 }
 
 .pagination a:hover {
@@ -281,7 +412,7 @@
 }
 
 .pagination .current {
-    color: #fff;
+    color: #ffffff;
     background: #2563eb;
     border: 1px solid #2563eb;
 }
@@ -292,11 +423,21 @@
     border: 1px solid #e2e8f0;
 }
 
+
+/* =========================================================
+   NO RESULTS
+========================================================= */
+
 .no-results {
     padding: 30px 10px;
     text-align: center;
     color: #94a3b8;
 }
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
 @media (max-width: 900px) {
 
@@ -306,6 +447,7 @@
     }
 
 }
+
 
 @media (max-width: 500px) {
 
@@ -324,29 +466,45 @@
 
 }
 
-{% endblock %}
+</style>
 
-{% block content %}
 
 <div class="guess-page">
 
     <div class="guess-container">
 
+
+        <!-- =================================================
+             GUESS GAME
+        ================================================== -->
+
         <div class="guess-card">
 
-            <h1>Guess the Number</h1>
+            <h1>
+                Guess the Number
+            </h1>
+
 
             <div class="guess-description">
                 Try to guess the <strong>lucky number</strong>
             </div>
 
+
             <div class="guess-hint">
                 Enter a number between 1 and 50
             </div>
 
+
+            <!-- =================================================
+                 GUESS FORM
+            ================================================== -->
+
             {% if not game_finished %}
 
-                <form method="POST" class="guess-form">
+                <form
+                    method="POST"
+                    class="guess-form"
+                >
 
                     {% csrf_token %}
 
@@ -362,6 +520,7 @@
                         autofocus
                     >
 
+
                     <button
                         type="submit"
                         name="action"
@@ -373,11 +532,46 @@
 
                 </form>
 
+
                 <div class="guess-range">
                     Lucky number is between 1 and 50
                 </div>
 
+
+                <!-- =================================================
+                     RESET LUCKY NUMBER
+                     Hidden when new game starts.
+                     Appears after first guess.
+                ================================================== -->
+
+                {% if game_started %}
+
+                    <form
+                        method="POST"
+                        class="reset-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            name="action"
+                            value="reset_lucky_number"
+                            class="reset-lucky-btn"
+                        >
+                            Reset Lucky Number
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
             {% endif %}
+
+
+            <!-- =================================================
+                 ATTEMPTS
+            ================================================== -->
 
             {% if try_count > 0 and not success %}
 
@@ -387,13 +581,25 @@
 
             {% endif %}
 
+
+            <!-- =================================================
+                 MESSAGE
+            ================================================== -->
+
             {% if message %}
 
-                <div class="message {% if success %}success{% else %}error{% endif %}">
+                <div
+                    class="message {% if success %}success{% else %}error{% endif %}"
+                >
                     {{ message }}
                 </div>
 
             {% endif %}
+
+
+            <!-- =================================================
+                 GAME FINISHED
+            ================================================== -->
 
             {% if game_finished %}
 
@@ -401,19 +607,30 @@
 
                     <div>
                         Lucky Number:
-                        <strong>{{ lucky_num }}</strong>
+                        <strong>
+                            {{ lucky_num }}
+                        </strong>
                     </div>
 
                     <div>
                         Attempts:
-                        <strong>{{ try_count }}</strong>
+                        <strong>
+                            {{ try_count }}
+                        </strong>
                     </div>
 
                 </div>
 
+
+                <!-- =================================================
+                     PLAY AGAIN / SAVE
+                ================================================== -->
+
                 <div class="game-buttons">
 
+
                     <form method="POST">
+
                         {% csrf_token %}
 
                         <button
@@ -427,12 +644,16 @@
 
                     </form>
 
+
                     {% if not game_saved %}
 
                         <button
                             type="button"
                             class="save-result-btn"
-                            onclick="document.getElementById('saveForm').style.display='block'; this.style.display='none';"
+                            onclick="
+                                document.getElementById('saveForm').style.display='block';
+                                this.style.display='none';
+                            "
                         >
                             Save Result
                         </button>
@@ -440,6 +661,11 @@
                     {% endif %}
 
                 </div>
+
+
+                <!-- =================================================
+                     SAVE RESULT FORM
+                ================================================== -->
 
                 {% if not game_saved %}
 
@@ -452,6 +678,7 @@
 
                         {% csrf_token %}
 
+
                         <input
                             type="text"
                             name="user_name"
@@ -459,11 +686,13 @@
                             required
                         >
 
+
                         <input
                             type="email"
                             name="email"
                             placeholder="Email address (optional)"
                         >
+
 
                         <input
                             type="text"
@@ -471,11 +700,13 @@
                             readonly
                         >
 
+
                         <input
                             type="text"
                             value="Attempts: {{ try_count }}"
                             readonly
                         >
+
 
                         <button
                             type="submit"
@@ -492,6 +723,11 @@
 
             {% endif %}
 
+
+            <!-- =================================================
+                 SAVE MESSAGE
+            ================================================== -->
+
             {% if save_message %}
 
                 <div class="save-info">
@@ -503,9 +739,16 @@
         </div>
 
 
+        <!-- =================================================
+             SAVED RESULTS
+        ================================================== -->
+
         <div class="result-card">
 
-            <h2>Saved Game Results</h2>
+            <h2>
+                Saved Game Results
+            </h2>
+
 
             {% if results_page.object_list %}
 
@@ -514,29 +757,63 @@
                     <table class="result-table">
 
                         <thead>
+
                             <tr>
-                                <th>SL</th>
-                                <th>User Name</th>
-                                <th>Email</th>
-                                <th>Lucky Number</th>
+
                                 <th>
+                                    SL
+                                </th>
+
+                                <th>
+                                    User Name
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Lucky Number
+                                </th>
+
+
+                                <!-- =================================================
+                                     ATTEMPTS SORT
+                                ================================================== -->
+
+                                <th>
+
                                     {% if sort == "default" %}
+
                                         <a href="?sort=attempts_asc">
                                             Attempts
                                         </a>
+
                                     {% elif sort == "attempts_asc" %}
+
                                         <a href="?sort=attempts_desc">
                                             Attempts ▲
                                         </a>
+
                                     {% else %}
+
                                         <a href="?sort=default">
                                             Attempts ▼
                                         </a>
+
                                     {% endif %}
+
                                 </th>
-                                <th>Date</th>
+
+
+                                <th>
+                                    Date
+                                </th>
+
                             </tr>
+
                         </thead>
+
 
                         <tbody>
 
@@ -548,19 +825,36 @@
                                         {{ results_page.start_index|add:forloop.counter0 }}
                                     </td>
 
-                                    <td>{{ result.USER_NAME }}</td>
 
                                     <td>
-                                        {% if result.EMAIL %}
-                                            {{ result.EMAIL }}
-                                        {% else %}
-                                            -
-                                        {% endif %}
+                                        {{ result.USER_NAME }}
                                     </td>
 
-                                    <td>{{ result.LUCKY_NUMBER }}</td>
 
-                                    <td>{{ result.TRY_COUNT }}</td>
+                                    <td>
+
+                                        {% if result.EMAIL %}
+
+                                            {{ result.EMAIL }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ result.LUCKY_NUMBER }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ result.TRY_COUNT }}
+                                    </td>
+
 
                                     <td>
                                         {{ result.CREATED_AT|date:"d-m-Y H:i" }}
@@ -577,17 +871,24 @@
                 </div>
 
 
+                <!-- =================================================
+                     PAGINATION
+                ================================================== -->
+
                 {% if results_page.paginator.num_pages > 1 %}
 
                     <div class="pagination">
 
+
                         {% if results_page.has_previous %}
 
-                            <a href="?page=1">
+                            <a href="?sort={{ sort }}&page=1">
                                 First
                             </a>
 
-                            <a href="?page={{ results_page.previous_page_number }}">
+                            <a
+                                href="?sort={{ sort }}&page={{ results_page.previous_page_number }}"
+                            >
                                 Previous
                             </a>
 
@@ -614,7 +915,9 @@
 
                             {% elif num > results_page.number|add:'-2' and num < results_page.number|add:'2' %}
 
-                                <a href="?page={{ num }}">
+                                <a
+                                    href="?sort={{ sort }}&page={{ num }}"
+                                >
                                     {{ num }}
                                 </a>
 
@@ -625,11 +928,15 @@
 
                         {% if results_page.has_next %}
 
-                            <a href="?page={{ results_page.next_page_number }}">
+                            <a
+                                href="?sort={{ sort }}&page={{ results_page.next_page_number }}"
+                            >
                                 Next
                             </a>
 
-                            <a href="?page={{ results_page.paginator.num_pages }}">
+                            <a
+                                href="?sort={{ sort }}&page={{ results_page.paginator.num_pages }}"
+                            >
                                 Last
                             </a>
 
@@ -649,6 +956,7 @@
 
                 {% endif %}
 
+
             {% else %}
 
                 <div class="no-results">
@@ -664,15 +972,21 @@
 </div>
 
 
+<!-- =========================================================
+     CLEAR INPUT AFTER WRONG GUESS
+========================================================== -->
+
 {% if clear_input %}
 
 <script>
 
     document.getElementById("guessInput").value = "";
+
     document.getElementById("guessInput").focus();
 
 </script>
 
 {% endif %}
+
 
 {% endblock %}
