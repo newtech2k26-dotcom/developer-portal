@@ -37,6 +37,10 @@ def hello(request):
 # User Login
 # =====================================================
 
+# =====================================================
+# User Login
+# =====================================================
+
 def user_login(request):
 
     if request.user.is_authenticated:
@@ -47,6 +51,27 @@ def user_login(request):
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
 
+        try:
+            from django.contrib.auth.models import User
+
+            user_exists = User.objects.filter(
+                username=username
+            ).exists()
+
+        except Exception:
+            user_exists = False
+
+        if not user_exists:
+
+            return render(
+                request,
+                "devs/login.html",
+                {
+                    "error": "User ID not found.",
+                    "username": username,
+                }
+            )
+
         user = authenticate(
             request,
             username=username,
@@ -56,6 +81,7 @@ def user_login(request):
         if user is not None:
 
             if user.is_active:
+
                 login(request, user)
 
                 return redirect("hello")
@@ -64,7 +90,8 @@ def user_login(request):
             request,
             "devs/login.html",
             {
-                "error": "Invalid username or password."
+                "error": "Password does not match.",
+                "username": username,
             }
         )
 

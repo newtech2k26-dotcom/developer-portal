@@ -682,6 +682,7 @@
                         <input
                             type="text"
                             name="user_name"
+                            value="{{ request.user.first_name|title }} {{ request.user.last_name|title }}"
                             placeholder="Your name"
                             required
                         >

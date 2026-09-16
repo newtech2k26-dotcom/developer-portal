@@ -15,14 +15,44 @@
     padding: 0 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
   .app-name { font-size: 20px; font-weight: 600; letter-spacing: 0.3px; }
-  .home-btn {
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-name {
+    color: #e2e8f0;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 12px;
+  }
+
+  .home-btn,
+  .logout-btn {
     display: flex; align-items: center; gap: 6px;
-    background: #2563eb; color: #fff; border: none;
+    color: #fff; border: none;
     padding: 9px 16px; border-radius: 8px; cursor: pointer;
     font-size: 14px; font-weight: 600; text-decoration: none;
     transition: background 0.15s;
   }
-  .home-btn:hover { background: #1d4ed8; }
+
+  .home-btn {
+    background: #2563eb;
+  }
+
+  .home-btn:hover {
+    background: #1d4ed8;
+  }
+
+  .logout-btn {
+    background: #dc2626;
+  }
+
+  .logout-btn:hover {
+    background: #b91c1c;
+  }
 
   /* ---------- LAYOUT ---------- */
   .layout { display: flex; min-height: calc(100vh - 60px); }
@@ -73,7 +103,18 @@
 
 <header class="topbar">
   <span class="app-name">Developer Portal</span>
-  <a href="/" class="home-btn">🏠 Home</a>
+
+  <div class="topbar-right">
+
+    <span class="user-name">
+      👤 {{ request.user.first_name|title }} {{ request.user.last_name|title }}
+    </span>
+
+    <a href="/" class="home-btn">🏠 Home</a>
+
+    <a href="{% url 'logout' %}" class="logout-btn">🚪 Logout</a>
+
+  </div>
 </header>
 
 <div class="layout">
@@ -83,52 +124,93 @@
       <span class="sidebar-title">Menu</span>
       <button class="toggle-btn" id="toggleBtn" title="Collapse / expand">›</button>
     </div>
+
     <nav>
       <ul class="menu">
-        <li><a href="/" class="menu-link leaf">Home</a></li>
+
+        <li>
+          <a href="/" class="menu-link leaf">Home</a>
+        </li>
+
         <li class="has-children">
-          <div class="menu-link">Developers <span class="chevron">›</span></div>
+          <div class="menu-link">
+            Developers <span class="chevron">›</span>
+          </div>
+
           <ul class="submenu">
-            <li><a href="/search/" class="menu-link leaf">Developer Info</a></li>
+            <li>
+              <a href="/search/" class="menu-link leaf">
+                Developer Info
+              </a>
+            </li>
+
             <li class="has-children">
-              <div class="menu-link">By Skill <span class="chevron">›</span></div>
+              <div class="menu-link">
+                By Skill <span class="chevron">›</span>
+              </div>
+
               <ul class="submenu">
                 <li><div class="menu-link leaf">Python</div></li>
                 <li><div class="menu-link leaf">Django</div></li>
                 <li><div class="menu-link leaf">Data Science</div></li>
               </ul>
             </li>
+
             <li><div class="menu-link leaf">Active</div></li>
             <li><div class="menu-link leaf">Inactive</div></li>
           </ul>
         </li>
+
         <li class="has-children">
-          <div class="menu-link">Reports <span class="chevron">›</span></div>
+          <div class="menu-link">
+            Reports <span class="chevron">›</span>
+          </div>
+
           <ul class="submenu">
             <li><div class="menu-link leaf">Monthly</div></li>
             <li><div class="menu-link leaf">Yearly</div></li>
           </ul>
         </li>
+
         <li class="has-children">
-          <div class="menu-link">Settings <span class="chevron">›</span></div>
+          <div class="menu-link">
+            Settings <span class="chevron">›</span>
+          </div>
+
           <ul class="submenu">
             <li><div class="menu-link leaf">Profile</div></li>
             <li><div class="menu-link leaf">Security</div></li>
           </ul>
         </li>
+
         <li class="has-children">
-          <div class="menu-link">Others <span class="chevron">›</span></div>
+          <div class="menu-link">
+            Others <span class="chevron">›</span>
+          </div>
+
           <ul class="submenu">
-            <li><a href="/guess-number/" class="menu-link leaf">Guess the Number Game</a></li>
-            <li><a href="/password-analyzer/" class="menu-link leaf">Password Analysis</a></li>
+            <li>
+              <a href="/guess-number/" class="menu-link leaf">
+                Guess the Number Game
+              </a>
+            </li>
+
+            <li>
+              <a href="/password-analyzer/" class="menu-link leaf">
+                Password Analysis
+              </a>
+            </li>
           </ul>
         </li>
-        <li><div class="menu-link leaf">About</div></li>
+
+        <li>
+          <div class="menu-link leaf">About</div>
+        </li>
+
       </ul>
     </nav>
   </aside>
 
-  <!-- each page drops its unique content here -->
   <main class="main">
     {% block content %}{% endblock %}
   </main>
@@ -141,11 +223,14 @@
       link.parentElement.classList.toggle('open');
     });
   });
+
   const sidebar = document.getElementById('sidebar');
   const toggleBtn = document.getElementById('toggleBtn');
+
   toggleBtn.addEventListener('click', function () {
     sidebar.classList.toggle('collapsed');
-    toggleBtn.textContent = sidebar.classList.contains('collapsed') ? '‹' : '›';
+    toggleBtn.textContent =
+      sidebar.classList.contains('collapsed') ? '‹' : '›';
   });
 </script>
 
