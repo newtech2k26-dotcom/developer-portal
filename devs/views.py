@@ -167,10 +167,81 @@ def menu_management(request):
             is_active=status
         )
 
-    menus = menus.order_by(
-        "display_order",
-        "menu_id"
+    # =====================================================
+    # Build Menu Hierarchy
+    # =====================================================
+
+    menus = list(
+        menus.order_by(
+            "display_order",
+            "menu_id"
+        )
     )
+
+    menu_map = {}
+
+    for menu in menus:
+
+        menu.children_list = []
+
+        menu_map[menu.menu_id] = menu
+
+
+    root_menus = []
+
+    for menu in menus:
+
+        if menu.parent_id:
+
+            parent = menu_map.get(
+                menu.parent_id
+            )
+
+            if parent:
+                parent.children_list.append(
+                    menu
+                )
+
+        else:
+
+            root_menus.append(
+                menu
+            )
+
+
+    # =====================================================
+    # Flatten Hierarchy For Report
+    # =====================================================
+
+    ordered_menus = []
+
+
+    def add_menu(menu, level=0):
+
+        menu.menu_level = level
+
+        ordered_menus.append(
+            menu
+        )
+
+        for child in menu.children_list:
+
+            add_menu(
+                child,
+                level + 1
+            )
+
+
+    for menu in root_menus:
+
+        add_menu(menu)
+    
+    # menus = menus.order_by(
+    #     "display_order",
+    #     "menu_id"
+    # )
+
+    
 
 
     paginator = Paginator(
