@@ -1,0 +1,22 @@
+{% extends "devs/base.html" %}
+
+{% block content %}
+
+<div class="access-denied-container">
+
+    <h1>Access Denied</h1>
+
+    <p>
+        You do not have permission to access this page.
+    </p>
+
+    <a
+        href="{% url 'hello' %}"
+        class="back-btn"
+    >
+        Go Home
+    </a>
+
+</div>
+
+{% endblock %}

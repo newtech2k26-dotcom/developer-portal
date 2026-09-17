@@ -1,0 +1,36 @@
+{% extends "devs/base.html" %}
+
+{% block content %}
+
+<div class="menu-delete-container">
+
+    <h1>Delete Menu</h1>
+
+    <p>
+        Are you sure you want to delete
+        <strong>{{ menu.menu_name }}</strong>?
+    </p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="delete-confirm-btn"
+        >
+            Yes, Delete
+        </button>
+
+        <a
+            href="{% url 'menu_management' %}"
+            class="cancel-btn"
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

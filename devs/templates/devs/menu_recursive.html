@@ -1,0 +1,59 @@
+{% for menu in menus %}
+
+    <li class="{% if menu.children_list %}has-children{% endif %}">
+
+        {% if menu.children_list %}
+
+            <div class="menu-link">
+
+                <span>
+                    {{ menu.menu_name }}
+                </span>
+
+                <span class="chevron">
+                    ›
+                </span>
+
+            </div>
+
+        {% else %}
+
+            {% if menu.has_page == "Y" and menu.menu_url %}
+
+                <a
+                    href="{{ menu.menu_url }}"
+                    class="menu-link leaf"
+                >
+                    <span>
+                        {{ menu.menu_name }}
+                    </span>
+                </a>
+
+            {% else %}
+
+                <div class="menu-link leaf">
+
+                    <span>
+                        {{ menu.menu_name }}
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+
+        {% if menu.children_list %}
+
+            <ul class="submenu">
+
+                {% include "devs/menu_recursive.html" with menus=menu.children_list %}
+
+            </ul>
+
+        {% endif %}
+
+    </li>
+
+{% endfor %}

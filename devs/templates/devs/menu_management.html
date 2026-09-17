@@ -1,0 +1,142 @@
+{% extends "devs/base.html" %}
+
+{% block content %}
+
+<div class="menu-management-container">
+
+    <div class="page-header">
+
+        <h1>Menu Management</h1>
+
+        <a
+            href="{% url 'menu_create' %}"
+            class="create-menu-btn"
+        >
+            + Create Menu
+        </a>
+
+    </div>
+
+
+    <div class="menu-table-container">
+
+        <table class="menu-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Menu Name</th>
+
+                    <th>Parent</th>
+
+                    <th>Page</th>
+
+                    <th>URL</th>
+
+                    <th>Permission</th>
+
+                    <th>Order</th>
+
+                    <th>Active</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for menu in menus %}
+
+                <tr>
+
+                    <td>
+                        {{ menu.menu_id }}
+                    </td>
+
+                    <td>
+                        {{ menu.menu_name }}
+                    </td>
+
+                    <td>
+
+                        {% if menu.parent %}
+
+                            {{ menu.parent.menu_name }}
+
+                        {% else %}
+
+                            —
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        {{ menu.has_page }}
+                    </td>
+
+                    <td>
+                        {{ menu.menu_url|default:"—" }}
+                    </td>
+
+                    <td>
+                        {{ menu.requires_permission }}
+                    </td>
+
+                    <td>
+                        {{ menu.display_order }}
+                    </td>
+
+                    <td>
+                        {{ menu.is_active }}
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="{% url 'menu_edit' menu.menu_id %}"
+                            class="edit-btn"
+                        >
+                            Edit
+                        </a>
+
+                        <a
+                            href="{% url 'menu_delete' menu.menu_id %}"
+                            class="delete-btn"
+                        >
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td
+                        colspan="9"
+                        class="no-data"
+                    >
+                        No menu found.
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

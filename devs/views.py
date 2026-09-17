@@ -4,7 +4,10 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+#from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import PortalMenu
+from .forms import PortalMenuForm
 from django.core.paginator import Paginator
 import mysql.connector
 import random
@@ -18,6 +21,7 @@ import string
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
+        port=3307,
         user="root",
         password="",
         database="TEST_PYTHON"
@@ -32,10 +36,6 @@ def get_connection():
 def hello(request):
     return render(request, "devs/home.html")
 
-
-# =====================================================
-# User Login
-# =====================================================
 
 # =====================================================
 # User Login
@@ -111,6 +111,153 @@ def user_logout(request):
 
     return redirect("login")
 
+# =====================================================
+# Menu Management
+# =====================================================
+
+@login_required
+def menu_management(request):
+
+    if not request.user.is_superuser:
+
+        return render(
+            request,
+            "devs/access_denied.html",
+            status=403
+        )
+
+    menus = PortalMenu.objects.all()
+
+    return render(
+        request,
+        "devs/menu_management.html",
+        {
+            "menus": menus
+        }
+    )
+
+
+# =====================================================
+# Create Menu
+# =====================================================
+
+@login_required
+def menu_create(request):
+
+    if not request.user.is_superuser:
+
+        return render(
+            request,
+            "devs/access_denied.html",
+            status=403
+        )
+
+    if request.method == "POST":
+
+        form = PortalMenuForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("menu_management")
+
+    else:
+
+        form = PortalMenuForm()
+
+    return render(
+        request,
+        "devs/menu_form.html",
+        {
+            "form": form,
+            "page_title": "Create Menu"
+        }
+    )
+
+
+# =====================================================
+# Edit Menu
+# =====================================================
+
+@login_required
+def menu_edit(request, menu_id):
+
+    if not request.user.is_superuser:
+
+        return render(
+            request,
+            "devs/access_denied.html",
+            status=403
+        )
+
+    menu = get_object_or_404(
+        PortalMenu,
+        pk=menu_id
+    )
+
+    if request.method == "POST":
+
+        form = PortalMenuForm(
+            request.POST,
+            instance=menu
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("menu_management")
+
+    else:
+
+        form = PortalMenuForm(
+            instance=menu
+        )
+
+    return render(
+        request,
+        "devs/menu_form.html",
+        {
+            "form": form,
+            "page_title": "Edit Menu"
+        }
+    )
+
+
+# =====================================================
+# Delete Menu
+# =====================================================
+
+@login_required
+def menu_delete(request, menu_id):
+
+    if not request.user.is_superuser:
+
+        return render(
+            request,
+            "devs/access_denied.html",
+            status=403
+        )
+
+    menu = get_object_or_404(
+        PortalMenu,
+        pk=menu_id
+    )
+
+    if request.method == "POST":
+
+        menu.delete()
+
+        return redirect("menu_management")
+
+    return render(
+        request,
+        "devs/menu_delete.html",
+        {
+            "menu": menu
+        }
+    )
 
 # =====================================================
 # Developer Info
