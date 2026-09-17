@@ -1,60 +1,92 @@
-{% extends "devs/base.html" %}
+<!-- =========================================================
+     MENU FORM MODAL CONTENT
+========================================================= -->
 
-{% block content %}
+<div class="modal-form-container">
 
-<div class="menu-form-container">
 
-    <div class="page-header">
+    <!-- =====================================================
+         MODAL HEADER
+    ====================================================== -->
 
-        <h1>{{ page_title }}</h1>
+    <div class="modal-form-header">
 
-        <a
-            href="{% url 'menu_management' %}"
-            class="back-btn"
+        <h2>
+            {{ page_title }}
+        </h2>
+
+
+        <button
+            type="button"
+            class="modal-close-btn"
+            onclick="closeMenuModal()"
         >
-            ← Back
-        </a>
+            ×
+        </button>
 
     </div>
 
 
+
+    <!-- =====================================================
+         MENU FORM
+    ====================================================== -->
+
     <form
         method="post"
+        action="{{ request.path }}"
         class="menu-form"
     >
 
         {% csrf_token %}
 
+
+        <!-- =================================================
+             FORM FIELDS
+        ================================================== -->
+
         {% for field in form %}
 
-        <div class="form-group">
+            <div class="form-group">
 
-            <label for="{{ field.id_for_label }}">
-                {{ field.label }}
-            </label>
 
-            {{ field }}
+                <label
+                    for="{{ field.id_for_label }}"
+                >
+                    {{ field.label }}
+                </label>
 
-            {% if field.errors %}
 
-                <div class="field-error">
+                {{ field }}
 
-                    {% for error in field.errors %}
 
-                        {{ error }}
+                {% if field.errors %}
 
-                    {% endfor %}
+                    <div class="field-error">
 
-                </div>
+                        {% for error in field.errors %}
 
-            {% endif %}
+                            {{ error }}
 
-        </div>
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
 
         {% endfor %}
 
 
+
+        <!-- =================================================
+             FORM ACTIONS
+        ================================================== -->
+
         <div class="form-actions">
+
 
             <button
                 type="submit"
@@ -63,17 +95,20 @@
                 Save
             </button>
 
-            <a
-                href="{% url 'menu_management' %}"
+
+            <button
+                type="button"
                 class="cancel-btn"
+                onclick="closeMenuModal()"
             >
                 Cancel
-            </a>
+            </button>
+
 
         </div>
 
+
     </form>
 
-</div>
 
-{% endblock %}
+</div>

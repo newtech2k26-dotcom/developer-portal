@@ -117,14 +117,6 @@ def user_logout(request):
 @login_required
 def menu_management(request):
 
-    if not request.user.is_superuser:
-
-        return render(
-            request,
-            "devs/access_denied.html",
-            status=403
-        )
-
     menus = PortalMenu.objects.all()
 
     return render(
@@ -135,6 +127,78 @@ def menu_management(request):
         }
     )
 
+# =====================================================
+
+# Menu Management
+
+# =====================================================
+
+@login_required
+def menu_management(request):
+
+    search = request.GET.get(
+        "search",
+        ""
+    ).strip()
+
+
+    status = request.GET.get(
+        "status",
+        ""
+    ).strip()
+
+    menus = (
+        PortalMenu.objects
+        .select_related("parent")
+        .all()
+    )
+
+
+    if search:
+
+        menus = menus.filter(
+            menu_name__icontains=search
+        )
+
+
+    if status in ["Y", "N"]:
+
+        menus = menus.filter(
+            is_active=status
+        )
+
+    menus = menus.order_by(
+        "display_order",
+        "menu_id"
+    )
+
+
+    paginator = Paginator(
+        menus,
+        10
+    )
+
+
+    page_number = request.GET.get(
+        "page"
+    )
+
+
+    menus_page = paginator.get_page(
+        page_number
+    )
+
+
+    return render(
+        request,
+        "devs/menu_management.html",
+        {
+            "menus_page": menus_page,
+            "search": search,
+            "status": status,
+        }
+    )
+
 
 # =====================================================
 # Create Menu
@@ -142,14 +206,6 @@ def menu_management(request):
 
 @login_required
 def menu_create(request):
-
-    if not request.user.is_superuser:
-
-        return render(
-            request,
-            "devs/access_denied.html",
-            status=403
-        )
 
     if request.method == "POST":
 
@@ -181,14 +237,6 @@ def menu_create(request):
 
 @login_required
 def menu_edit(request, menu_id):
-
-    if not request.user.is_superuser:
-
-        return render(
-            request,
-            "devs/access_denied.html",
-            status=403
-        )
 
     menu = get_object_or_404(
         PortalMenu,
@@ -230,14 +278,6 @@ def menu_edit(request, menu_id):
 
 @login_required
 def menu_delete(request, menu_id):
-
-    if not request.user.is_superuser:
-
-        return render(
-            request,
-            "devs/access_denied.html",
-            status=403
-        )
 
     menu = get_object_or_404(
         PortalMenu,

@@ -1,142 +1,2098 @@
 {% extends "devs/base.html" %}
 
+{% block title %}Menu Management{% endblock %}
+
+
 {% block content %}
 
-<div class="menu-management-container">
 
-    <div class="page-header">
+<style>
 
-        <h1>Menu Management</h1>
-
-        <a
-            href="{% url 'menu_create' %}"
-            class="create-menu-btn"
-        >
-            + Create Menu
-        </a>
-
-    </div>
+#MENU MANAGEMENT PAGE
 
 
-    <div class="menu-table-container">
+.menu-page {
 
-        <table class="menu-table">
+    min-height: calc(100vh - 160px);
 
-            <thead>
+    display: flex;
 
-                <tr>
+    justify-content: center;
 
-                    <th>ID</th>
+    align-items: flex-start;
 
-                    <th>Menu Name</th>
+    padding: 25px 20px;
 
-                    <th>Parent</th>
+}
 
-                    <th>Page</th>
 
-                    <th>URL</th>
+#MAIN CONTAINER
 
-                    <th>Permission</th>
+.menu-container {
 
-                    <th>Order</th>
+    width: 100%;
 
-                    <th>Active</th>
+    max-width: 1250px;
 
-                    <th>Action</th>
+}
 
-                </tr>
 
-            </thead>
+#MENU CARD
 
-            <tbody>
+.menu-card {
 
-                {% for menu in menus %}
+    background: #ffffff;
 
-                <tr>
+    border-radius: 18px;
 
-                    <td>
-                        {{ menu.menu_id }}
-                    </td>
+    border: 1px solid #e2e8f0;
 
-                    <td>
-                        {{ menu.menu_name }}
-                    </td>
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
 
-                    <td>
+    padding: 25px;
 
-                        {% if menu.parent %}
+}
 
-                            {{ menu.parent.menu_name }}
+
+#CARD HEADER
+
+.menu-card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+
+.menu-card-header h2 {
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 22px;
+
+}
+
+
+#CREATE NEW MENU BUTTON
+
+.create-menu-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+
+    cursor: pointer;
+
+}
+
+
+.create-menu-btn:hover {
+
+    background: #1d4ed8;
+
+    color: #ffffff;
+
+}
+
+
+#SEARCH / FILTER
+
+.menu-filter-form {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+    padding: 16px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+
+}
+
+
+.menu-filter-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+
+.menu-filter-group label {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #475569;
+
+}
+
+
+#SEARCH INPUT
+
+.menu-search-input {
+
+    width: 280px;
+
+    height: 40px;
+
+    padding: 0 12px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    color: #0f172a;
+
+    background: #ffffff;
+
+    box-sizing: border-box;
+
+}
+
+
+.menu-search-input:focus {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+
+}
+
+
+#STATUS SELECT
+
+.menu-status-select {
+
+    width: 150px;
+
+    height: 40px;
+
+    padding: 0 10px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    font-size: 14px;
+
+    color: #334155;
+
+    background: #ffffff;
+
+}
+
+
+.menu-status-select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+
+}
+
+
+#FILTER BUTTONS
+
+.menu-filter-actions {
+
+    display: flex;
+
+    gap: 7px;
+
+}
+
+
+.menu-search-btn {
+
+    height: 40px;
+
+    padding: 0 18px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.menu-search-btn:hover {
+
+    background: #1d4ed8;
+
+}
+
+
+.menu-reset-btn {
+
+    height: 40px;
+
+    padding: 0 16px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #475569;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    box-sizing: border-box;
+
+}
+
+
+.menu-reset-btn:hover {
+
+    background: #f1f5f9;
+
+    color: #1e293b;
+
+}
+
+
+#TABLE WRAPPER
+
+.menu-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+#TABLE
+
+.menu-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 14px;
+
+}
+
+
+#TABLE HEADER
+
+.menu-table th {
+
+    padding: 7px 8px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-weight: 600;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+}
+
+
+#TABLE DATA
+
+.menu-table td {
+
+    padding: 7px 8px;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    color: #334155;
+
+    white-space: nowrap;
+
+    vertical-align: middle;
+
+}
+
+
+.menu-table tbody tr:hover {
+
+    background: #f8fafc;
+
+}
+
+
+#MENU NAME
+
+.menu-name {
+
+    font-weight: 600;
+
+    color: #0f172a;
+
+}
+
+
+#PARENT
+
+.parent-name {
+
+    color: #64748b;
+
+}
+
+
+#BADGES
+
+.menu-badge {
+
+    display: inline-block;
+
+    padding: 4px 9px;
+
+    border-radius: 12px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.badge-yes {
+
+    color: #166534;
+
+    background: #dcfce7;
+
+}
+
+
+.badge-no {
+
+    color: #64748b;
+
+    background: #f1f5f9;
+
+}
+
+
+#ACTIVE / INACTIVE
+
+.menu-active {
+
+    color: #16a34a;
+
+    font-weight: 600;
+
+}
+
+
+.menu-inactive {
+
+    color: #dc2626;
+
+    font-weight: 600;
+
+}
+
+
+#ACTION BUTTONS
+
+.menu-actions {
+
+    display: flex;
+
+    gap: 6px;
+
+}
+
+
+.menu-edit-btn {
+
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 7px;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.menu-edit-btn:hover {
+
+    background: #dbeafe;
+
+    color: #1d4ed8;
+
+}
+
+
+.menu-delete-btn {
+
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 7px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    color: #dc2626;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.menu-delete-btn:hover {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+}
+
+
+#PAGINATION
+
+.menu-pagination {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 20px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.menu-pagination a,
+
+.menu-pagination span {
+
+    min-width: 34px;
+
+    height: 34px;
+
+    padding: 0 8px;
+
+    display: inline-flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    box-sizing: border-box;
+
+}
+
+
+.menu-pagination a {
+
+    color: #2563eb;
+
+    border: 1px solid #cbd5e1;
+
+    background: #ffffff;
+
+}
+
+
+.menu-pagination a:hover {
+
+    background: #eff6ff;
+
+}
+
+
+.menu-pagination .current {
+
+    color: #ffffff;
+
+    background: #2563eb;
+
+    border: 1px solid #2563eb;
+
+}
+
+
+.menu-pagination .disabled {
+
+    color: #94a3b8;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+}
+
+
+#NO RESULTS
+
+.menu-no-results {
+
+    padding: 30px 10px;
+
+    text-align: center;
+
+    color: #94a3b8;
+
+}
+
+
+#MENU MODAL
+
+.menu-modal {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+}
+
+
+#MODAL OVERLAY
+
+.menu-modal-overlay {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(15, 23, 42, 0.55);
+
+    backdrop-filter: blur(2px);
+
+}
+
+
+#MODAL BOX
+
+.menu-modal-box {
+
+    position: relative;
+
+    width: 90%;
+
+    max-width: 600px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    margin: 5vh auto;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+
+}
+
+
+#MODAL CONTENT
+
+#menuModalContent {
+
+    width: 100%;
+
+}
+
+
+#MODAL FORM CONTAINER
+
+.modal-form-container {
+
+    padding: 25px;
+
+}
+
+
+#MODAL HEADER
+
+.modal-form-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+
+.modal-form-header h2 {
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 21px;
+
+}
+
+
+#MODAL CLOSE BUTTON
+
+.modal-close-btn {
+
+    width: 34px;
+
+    height: 34px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 24px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+}
+
+
+.modal-close-btn:hover {
+
+    background: #fee2e2;
+
+    color: #dc2626;
+
+}
+
+
+#MODAL FORM
+
+.menu-form {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+}
+
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+
+.form-group label {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #334155;
+
+}
+
+
+.form-group input,
+.form-group select {
+
+    width: 100%;
+
+    height: 40px;
+
+    padding: 0 10px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    font-size: 14px;
+
+}
+
+
+.form-group input:focus,
+.form-group select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+
+}
+
+
+#FIELD ERROR
+
+.field-error {
+
+    color: #dc2626;
+
+    font-size: 12px;
+
+}
+
+
+#FORM ACTIONS
+
+.form-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-top: 5px;
+
+}
+
+
+.save-btn {
+
+    padding: 9px 18px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #2563eb;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.save-btn:hover {
+
+    background: #1d4ed8;
+
+}
+
+
+.cancel-btn {
+
+    padding: 9px 18px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #475569;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.cancel-btn:hover {
+
+    background: #f1f5f9;
+
+}
+
+
+#DELETE MODAL
+
+.delete-modal-container {
+
+    padding: 30px;
+
+    text-align: center;
+
+}
+
+
+.delete-modal-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+    font-size: 24px;
+
+}
+
+
+.delete-modal-container h2 {
+
+    margin: 0 0 10px;
+
+    color: #0f172a;
+
+    font-size: 20px;
+
+}
+
+
+.delete-modal-container p {
+
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+}
+
+
+.delete-menu-name {
+
+    color: #0f172a;
+
+    font-weight: 600;
+
+}
+
+
+.delete-modal-actions {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 25px;
+
+}
+
+
+.confirm-delete-btn {
+
+    padding: 9px 18px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #dc2626;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.confirm-delete-btn:hover {
+
+    background: #b91c1c;
+
+}
+
+
+#LOADING
+
+.menu-modal-loading {
+
+    padding: 40px;
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 14px;
+
+}
+
+
+#RESPONSIVE
+
+@media (max-width: 800px) {
+
+    .menu-page {
+
+        padding: 20px 10px;
+
+    }
+
+
+    .menu-card {
+
+        padding: 20px;
+
+    }
+
+
+    .menu-card-header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+
+    .menu-filter-form {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .menu-search-input,
+
+    .menu-status-select {
+
+        width: 100%;
+
+    }
+
+
+    .menu-filter-actions {
+
+        width: 100%;
+
+    }
+
+
+    .menu-modal-box {
+
+        width: 94%;
+
+        margin: 3vh auto;
+
+        max-height: 94vh;
+
+    }
+
+}
+
+</style>
+
+
+
+<!-- =========================================================
+     MENU PAGE
+========================================================= -->
+
+<div class="menu-page">
+
+    <div class="menu-container">
+
+
+        #MENU MANAGEMENT CARD
+
+        <div class="menu-card">
+
+
+            #HEADER
+
+            <div class="menu-card-header">
+
+                <h2>
+                    Menu Management
+                </h2>
+
+
+                #CREATE BUTTON
+
+                <a
+                    href="{% url 'menu_create' %}"
+                    class="create-menu-btn"
+                    onclick="openMenuModal(event, this.href)"
+                >
+                    + Create New Menu
+                </a>
+
+            </div>
+
+
+
+            #SEARCH / FILTER
+
+            <form
+                method="GET"
+                class="menu-filter-form"
+            >
+
+
+                <!-- MENU NAME -->
+
+                <div class="menu-filter-group">
+
+                    <label>
+                        Menu Name
+                    </label>
+
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search menu name..."
+                        class="menu-search-input"
+                    >
+
+                </div>
+
+
+
+                <!-- STATUS -->
+
+                <div class="menu-filter-group">
+
+                    <label>
+                        Status
+                    </label>
+
+
+                    <select
+                        name="status"
+                        class="menu-status-select"
+                    >
+
+                        <option value="">
+                            All
+                        </option>
+
+
+                        <option
+                            value="Y"
+                            {% if status == "Y" %}
+                                selected
+                            {% endif %}
+                        >
+                            Active
+                        </option>
+
+
+                        <option
+                            value="N"
+                            {% if status == "N" %}
+                                selected
+                            {% endif %}
+                        >
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="menu-filter-actions">
+
+                    <button
+                        type="submit"
+                        class="menu-search-btn"
+                    >
+                        Search
+                    </button>
+
+
+                    <a
+                        href="{% url 'menu_management' %}"
+                        class="menu-reset-btn"
+                    >
+                        Reset
+                    </a>
+
+                </div>
+
+            </form>
+
+
+
+            #REPORT TABLE
+
+            {% if menus_page.object_list %}
+
+                <div class="menu-table-wrapper">
+
+                    <table class="menu-table">
+
+                        <thead>
+
+                            <tr>
+                                <th> SL </th>
+                                <th> Menu Name </th>
+                                <th> Parent </th>
+                                <th> Page </th>
+                                <th> URL </th>
+                                <th> Permission </th>
+                                <th> Order </th>
+                                <th> Status </th>
+                                <th> Action </th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for menu in menus_page %}
+
+                                <tr>
+
+
+                                    <!-- SL -->
+
+                                    <td>
+                                        {{ menus_page.start_index|add:forloop.counter0 }}
+                                    </td>
+
+
+
+                                    <!-- MENU NAME -->
+
+                                    <td>
+
+                                        <span class="menu-name">
+                                            {{ menu.menu_name }}
+                                        </span>
+
+                                    </td>
+
+
+
+                                    <!-- PARENT -->
+
+                                    <td>
+
+                                        {% if menu.parent %}
+
+                                            <span class="parent-name">
+                                                {{ menu.parent.menu_name }}
+                                            </span>
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+
+                                    <!-- PAGE -->
+
+                                    <td>
+
+                                        {% if menu.has_page == "Y" %}
+
+                                            <span class="menu-badge badge-yes">
+                                                Yes
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="menu-badge badge-no">
+                                                No
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+
+                                    <!-- URL -->
+
+                                    <td>
+
+                                        {% if menu.menu_url %}
+
+                                            {{ menu.menu_url }}
+
+                                        {% else %}
+
+                                            -
+
+                                        {% endif %}
+
+                                    </td>
+
+
+
+                                    <!-- PERMISSION -->
+
+                                    <td>
+
+                                        {% if menu.requires_permission == "Y" %}
+
+                                            <span class="menu-badge badge-yes">
+                                                Required
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="menu-badge badge-no">
+                                                Not Required
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+
+                                    <!-- ORDER -->
+
+                                    <td>
+                                        {{ menu.display_order }}
+                                    </td>
+
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        {% if menu.is_active == "Y" %}
+
+                                            <span class="menu-active">
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="menu-inactive">
+                                                Inactive
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+
+                                    <!-- ACTION -->
+
+                                    <td>
+
+                                        <div class="menu-actions">
+
+
+                                            <!-- EDIT -->
+
+                                            <a
+                                                href="{% url 'menu_edit' menu.menu_id %}"
+                                                class="menu-edit-btn"
+                                                onclick="openMenuModal(event, this.href)"
+                                            >
+                                                Edit
+                                            </a>
+
+
+                                            <!-- DELETE -->
+
+                                            <a
+                                                href="{% url 'menu_delete' menu.menu_id %}"
+                                                class="menu-delete-btn"
+                                                onclick="openDeleteModal(event, this.href)"
+                                            >
+                                                Delete
+                                            </a>
+
+
+                                        </div>
+
+                                    </td>
+
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                #PAGINATION
+
+                {% if menus_page.paginator.num_pages > 1 %}
+
+                    <div class="menu-pagination">
+
+
+                        <!-- FIRST / PREVIOUS -->
+
+                        {% if menus_page.has_previous %}
+
+                            <a
+                                href="?search={{ search }}&status={{ status }}&page=1"
+                            >
+                                First
+                            </a>
+
+
+                            <a
+                                href="?search={{ search }}&status={{ status }}&page={{ menus_page.previous_page_number }}"
+                            >
+                                Previous
+                            </a>
 
                         {% else %}
 
-                            —
+                            <span class="disabled">
+                                First
+                            </span>
+
+
+                            <span class="disabled">
+                                Previous
+                            </span>
 
                         {% endif %}
 
-                    </td>
 
-                    <td>
-                        {{ menu.has_page }}
-                    </td>
 
-                    <td>
-                        {{ menu.menu_url|default:"—" }}
-                    </td>
+                        <!-- PAGE NUMBERS -->
 
-                    <td>
-                        {{ menu.requires_permission }}
-                    </td>
+                        {% for num in menus_page.paginator.page_range %}
 
-                    <td>
-                        {{ menu.display_order }}
-                    </td>
+                            {% if num == menus_page.number %}
 
-                    <td>
-                        {{ menu.is_active }}
-                    </td>
+                                <span class="current">
+                                    {{ num }}
+                                </span>
 
-                    <td>
+                            {% elif num > menus_page.number|add:'-2' and num < menus_page.number|add:'2' %}
 
-                        <a
-                            href="{% url 'menu_edit' menu.menu_id %}"
-                            class="edit-btn"
-                        >
-                            Edit
-                        </a>
+                                <a
+                                    href="?search={{ search }}&status={{ status }}&page={{ num }}"
+                                >
+                                    {{ num }}
+                                </a>
 
-                        <a
-                            href="{% url 'menu_delete' menu.menu_id %}"
-                            class="delete-btn"
-                        >
-                            Delete
-                        </a>
+                            {% endif %}
 
-                    </td>
+                        {% endfor %}
 
-                </tr>
 
-                {% empty %}
 
-                <tr>
+                        <!-- NEXT / LAST -->
 
-                    <td
-                        colspan="9"
-                        class="no-data"
-                    >
-                        No menu found.
-                    </td>
+                        {% if menus_page.has_next %}
 
-                </tr>
+                            <a
+                                href="?search={{ search }}&status={{ status }}&page={{ menus_page.next_page_number }}"
+                            >
+                                Next
+                            </a>
 
-                {% endfor %}
 
-            </tbody>
+                            <a
+                                href="?search={{ search }}&status={{ status }}&page={{ menus_page.paginator.num_pages }}"
+                            >
+                                Last
+                            </a>
 
-        </table>
+                        {% else %}
+
+                            <span class="disabled">
+                                Next
+                            </span>
+
+
+                            <span class="disabled">
+                                Last
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+
+
+            {% else %}
+
+                #NO DATA
+
+                <div class="menu-no-results">
+
+                    No menu found.
+
+                </div>
+
+            {% endif %}
+
+        </div>
 
     </div>
 
 </div>
+
+
+
+<!-- =========================================================
+     CREATE / EDIT MODAL
+========================================================= -->
+
+<div
+    id="menuModal"
+    class="menu-modal"
+>
+
+    {% comment %} <div
+        class="menu-modal-overlay"
+        onclick="closeMenuModal()"
+    ></div> {% endcomment %}
+
+    <div class="menu-modal-overlay"></div>
+
+
+    <div class="menu-modal-box">
+
+        <div id="menuModalContent">
+
+            <!-- Form loaded here -->
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     DELETE MODAL
+========================================================= -->
+
+<div
+    id="deleteModal"
+    class="menu-modal"
+>
+
+    {% comment %} <div
+        class="menu-modal-overlay"
+        onclick="closeDeleteModal()"
+    ></div> {% endcomment %}
+
+    <div class="menu-modal-overlay"></div>
+
+
+    <div class="menu-modal-box">
+
+        <div id="deleteModalContent">
+
+            <!-- Delete confirmation loaded here -->
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   OPEN CREATE / EDIT MODAL
+========================================================= */
+
+function openMenuModal(event, url) {
+
+    event.preventDefault();
+
+
+    const modal =
+        document.getElementById(
+            "menuModal"
+        );
+
+
+    const content =
+        document.getElementById(
+            "menuModalContent"
+        );
+
+
+    content.innerHTML = `
+        <div class="menu-modal-loading">
+            Loading...
+        </div>
+    `;
+
+
+    modal.style.display = "block";
+
+
+    fetch(
+        url,
+        {
+            headers: {
+                "X-Requested-With":
+                    "XMLHttpRequest"
+            }
+        }
+    )
+
+    .then(function(response) {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load menu form."
+            );
+
+        }
+
+        return response.text();
+
+    })
+
+    .then(function(html) {
+
+        content.innerHTML = html;
+
+        setupMenuForm();
+
+    })
+
+    .catch(function(error) {
+
+        console.error(error);
+
+        content.innerHTML = `
+            <div class="menu-modal-loading"
+                 style="color:#dc2626;">
+                Unable to load menu form.
+            </div>
+        `;
+
+    });
+
+}
+
+
+/* =========================================================
+   CLOSE CREATE / EDIT MODAL
+========================================================= */
+
+function closeMenuModal() {
+
+    const modal =
+        document.getElementById(
+            "menuModal"
+        );
+
+
+    modal.style.display = "none";
+
+
+    document.getElementById(
+        "menuModalContent"
+    ).innerHTML = "";
+
+}
+
+
+/* =========================================================
+   SETUP CREATE / EDIT FORM
+========================================================= */
+
+function setupMenuForm() {
+
+    const form =
+        document.querySelector(
+            "#menuModalContent form"
+        );
+
+
+    if (!form) {
+
+        return;
+
+    }
+
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const formData =
+                new FormData(form);
+
+
+            fetch(
+                form.action ||
+                window.location.href,
+                {
+                    method: "POST",
+
+                    body: formData,
+
+                    headers: {
+                        "X-Requested-With":
+                            "XMLHttpRequest"
+                    }
+                }
+            )
+
+            .then(function(response) {
+
+                /*
+                 * Django redirects after
+                 * successful save.
+                 */
+
+                if (
+                    response.redirected
+                ) {
+
+                    return {
+                        success: true
+                    };
+
+                }
+
+
+                return response.text()
+                    .then(function(html) {
+
+                        return {
+                            success: false,
+                            html: html
+                        };
+
+                    });
+
+            })
+
+            .then(function(result) {
+
+                if (result.success) {
+
+                    closeMenuModal();
+
+                    window.location.reload();
+
+                    return;
+
+                }
+
+
+                /*
+                 * Validation error.
+                 * Replace modal content with
+                 * returned form.
+                 */
+
+                document.getElementById(
+                    "menuModalContent"
+                ).innerHTML =
+                    result.html;
+
+
+                setupMenuForm();
+
+            })
+
+            .catch(function(error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to save menu."
+                );
+
+            });
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   OPEN DELETE MODAL
+========================================================= */
+
+function openDeleteModal(event, url) {
+
+    event.preventDefault();
+
+
+    const modal =
+        document.getElementById(
+            "deleteModal"
+        );
+
+
+    const content =
+        document.getElementById(
+            "deleteModalContent"
+        );
+
+
+    content.innerHTML = `
+        <div class="menu-modal-loading">
+            Loading...
+        </div>
+    `;
+
+
+    modal.style.display = "block";
+
+
+    fetch(
+        url,
+        {
+            headers: {
+                "X-Requested-With":
+                    "XMLHttpRequest"
+            }
+        }
+    )
+
+    .then(function(response) {
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load delete confirmation."
+            );
+
+        }
+
+        return response.text();
+
+    })
+
+    .then(function(html) {
+
+        content.innerHTML = html;
+
+        setupDeleteForm();
+
+    })
+
+    .catch(function(error) {
+
+        console.error(error);
+
+        content.innerHTML = `
+            <div class="menu-modal-loading"
+                 style="color:#dc2626;">
+                Unable to load delete confirmation.
+            </div>
+        `;
+
+    });
+
+}
+
+
+/* =========================================================
+   CLOSE DELETE MODAL
+========================================================= */
+
+function closeDeleteModal() {
+
+    const modal =
+        document.getElementById(
+            "deleteModal"
+        );
+
+
+    modal.style.display = "none";
+
+
+    document.getElementById(
+        "deleteModalContent"
+    ).innerHTML = "";
+
+}
+
+
+/* =========================================================
+   SETUP DELETE FORM
+========================================================= */
+
+function setupDeleteForm() {
+
+    const form =
+        document.querySelector(
+            "#deleteModalContent form"
+        );
+
+
+    if (!form) {
+
+        return;
+
+    }
+
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const formData =
+                new FormData(form);
+
+
+            fetch(
+                form.action ||
+                window.location.href,
+                {
+                    method: "POST",
+
+                    body: formData,
+
+                    headers: {
+                        "X-Requested-With":
+                            "XMLHttpRequest"
+                    }
+                }
+            )
+
+            .then(function(response) {
+
+                if (
+                    response.redirected
+                ) {
+
+                    return {
+                        success: true
+                    };
+
+                }
+
+
+                return response.text()
+                    .then(function(html) {
+
+                        return {
+                            success: false,
+                            html: html
+                        };
+
+                    });
+
+            })
+
+            .then(function(result) {
+
+                if (result.success) {
+
+                    closeDeleteModal();
+
+                    window.location.reload();
+
+                    return;
+
+                }
+
+
+                document.getElementById(
+                    "deleteModalContent"
+                ).innerHTML =
+                    result.html;
+
+
+                setupDeleteForm();
+
+            })
+
+            .catch(function(error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to delete menu."
+                );
+
+            });
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE MODALS WITH ESC KEY
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            closeMenuModal();
+
+            closeDeleteModal();
+
+        }
+
+    }
+);
+
+</script>
+
 
 {% endblock %}

@@ -1,36 +1,54 @@
-{% extends "devs/base.html" %}
+<!-- =========================================================
+     DELETE MENU MODAL CONTENT
+========================================================= -->
 
-{% block content %}
+<div class="delete-modal-container">
 
-<div class="menu-delete-container">
+<div class="delete-modal-icon">
+    !
+</div>
 
-    <h1>Delete Menu</h1>
+<h2>
+    Delete Menu
+</h2>
 
-    <p>
-        Are you sure you want to delete
-        <strong>{{ menu.menu_name }}</strong>?
-    </p>
+<p>
+    Are you sure you want to delete
 
-    <form method="post">
+    <span class="delete-menu-name">
+        {{ menu.menu_name }}
+    </span>
 
-        {% csrf_token %}
+    ?
+</p>
+
+<form
+    method="post"
+    action="{{ request.path }}"
+    class="delete-menu-form"
+>
+
+    {% csrf_token %}
+
+    <div class="delete-modal-actions">
+
+        <button
+            type="button"
+            class="cancel-btn"
+            onclick="closeDeleteModal()"
+        >
+            Cancel
+        </button>
 
         <button
             type="submit"
-            class="delete-confirm-btn"
+            class="confirm-delete-btn"
         >
             Yes, Delete
         </button>
 
-        <a
-            href="{% url 'menu_management' %}"
-            class="cancel-btn"
-        >
-            Cancel
-        </a>
+    </div>
 
-    </form>
+</form>
 
 </div>
-
-{% endblock %}
