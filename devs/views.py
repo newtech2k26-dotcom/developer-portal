@@ -23,10 +23,9 @@ def get_connection():
         host="localhost",
         port=3307,
         user="root",
-        password="",
+        password="DriosmhA#7679",
         database="TEST_PYTHON"
     )
-
 
 # =====================================================
 # Home

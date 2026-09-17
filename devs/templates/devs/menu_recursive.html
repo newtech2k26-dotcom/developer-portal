@@ -1,6 +1,13 @@
 {% for menu in menus %}
 
-    <li class="{% if menu.children_list %}has-children{% endif %}">
+    <li
+        class="
+            {% if menu.children_list %}has-children{% endif %}
+            {% if menu.menu_url and request.path == menu.menu_url %}
+                active-menu
+            {% endif %}
+        "
+    >
 
         {% if menu.children_list %}
 

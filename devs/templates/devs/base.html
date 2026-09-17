@@ -396,6 +396,38 @@
             padding: 50px;
         }
 
+        /* ---------- ACTIVE MENU ---------- */
+
+        .sidebar li.active-menu > .menu-link {
+
+            background: #16a34a;
+
+            color: #fff;
+
+        }
+
+
+        .sidebar li.active-menu > .menu-link:hover {
+
+            background: #15803d;
+
+            color: #fff;
+
+        }
+
+
+        .sidebar li.active-menu > .menu-link.leaf {
+
+            color: #fff;
+
+        }
+
+
+        .sidebar li.active-menu > .menu-link.leaf:visited {
+
+            color: #fff;
+
+        }
 
         {% block extra_css %}
 
@@ -434,7 +466,7 @@
 
 
             <a
-                href="/"
+                href="{% url 'hello' %}"
                 class="home-btn"
             >
                 🏠 Home
@@ -541,6 +573,39 @@
                 });
 
             });
+
+
+
+        /* ---------- EXPAND ACTIVE MENU PATH ---------- */
+
+        const activeMenu =
+            document.querySelector('.active-menu');
+
+
+        if (activeMenu) {
+
+            let parent =
+                activeMenu.parentElement;
+
+
+            while (parent) {
+
+                if (
+                    parent.tagName === 'LI' &&
+                    parent.classList.contains('has-children')
+                ) {
+
+                    parent.classList.add('open');
+
+                }
+
+
+                parent =
+                    parent.parentElement;
+
+            }
+
+        }
 
 
 
