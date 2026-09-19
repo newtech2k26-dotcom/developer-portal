@@ -1,0 +1,131 @@
+<ul class="permission-menu-list">
+
+    {% for menu in menus %}
+
+        <li>
+
+            <div class="permission-menu-row">
+
+                {% if menu.children_list %}
+
+                    <button
+                        type="button"
+                        class="permission-expand-btn"
+                        onclick="togglePermissionMenu(this)"
+                    >
+                        +
+                    </button>
+
+                {% else %}
+
+                    <span class="permission-expand-space"></span>
+
+                {% endif %}
+
+
+                {% if menu.menu_name == "Home" or menu.menu_name == "About" %}
+
+                    <span class="permission-menu-public">
+                        {{ menu.menu_name }}
+                        <small>
+                            Always Available
+                        </small>
+                    </span>
+
+                {% else %}
+
+                    {% if menu.requires_permission == "Y" %}
+
+                        <label class="permission-menu-label">
+
+                            <input
+                                type="checkbox"
+                                class="menu-permission-checkbox"
+                                data-menu-id="{{ menu.menu_id }}"
+                                {% if menu.menu_id in permitted_menu_ids %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <span>
+                                {{ menu.menu_name }}
+                            </span>
+
+                        </label>
+
+                    {% else %}
+
+                        <span class="permission-menu-public">
+
+                            {{ menu.menu_name }}
+
+                            <small>
+                                Public
+                            </small>
+
+                        </span>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+
+            {% if menu.children_list %}
+
+                <div
+                    class="permission-children"
+                    style="display:none;"
+                >
+
+                    {% include "devs/user_menu_permission_recursive.html" with menus=menu.children_list %}
+
+                </div>
+
+            {% endif %}
+
+        </li>
+
+    {% endfor %}
+
+</ul>
+
+
+<script>
+
+function togglePermissionMenu(button) {
+
+    const row =
+        button.closest(
+            ".permission-menu-row"
+        );
+
+    const children =
+        row.parentElement.querySelector(
+            ":scope > .permission-children"
+        );
+
+    if (!children) {
+        return;
+    }
+
+    if (
+        children.style.display === "none"
+    ) {
+
+        children.style.display = "block";
+
+        button.textContent = "−";
+
+    } else {
+
+        children.style.display = "none";
+
+        button.textContent = "+";
+
+    }
+
+}
+
+</script>

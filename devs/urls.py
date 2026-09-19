@@ -27,4 +27,10 @@ urlpatterns = [
     path("menu-management/edit/<int:menu_id>/", views.menu_edit, name="menu_edit"),
 
     path("menu-management/delete/<int:menu_id>/", views.menu_delete, name="menu_delete"),
+
+    # =====================================================
+    # User Menu Permission
+    # =====================================================
+
+    path("user-menu-permission/", views.user_menu_permission, name="user_menu_permission"),
 ]

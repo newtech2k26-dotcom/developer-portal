@@ -101,7 +101,7 @@ class PortalMenuForm(forms.ModelForm):
 
             cleaned_data["menu_url"] = ""
 
-            cleaned_data["requires_permission"] = "N"
+            #cleaned_data["requires_permission"] = "Y"
 
         if self.instance.pk:
 

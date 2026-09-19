@@ -6,7 +6,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 #from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import PortalMenu
+from django.contrib.auth.models import User
+#from .models import PortalMenu
+from .models import PortalMenu, UserMenuPermission
 from .forms import PortalMenuForm
 from django.core.paginator import Paginator
 import mysql.connector
@@ -366,6 +368,107 @@ def menu_delete(request, menu_id):
         "devs/menu_delete.html",
         {
             "menu": menu
+        }
+    )
+
+# =====================================================
+# User Wise Menu Permission
+# =====================================================
+
+@login_required
+def user_menu_permission(request):
+
+    selected_user_id = request.GET.get(
+        "user_id",
+        ""
+    ).strip()
+
+    users = User.objects.filter(
+        is_active=True
+    ).order_by(
+        "username"
+    )
+
+    menus = list(
+        PortalMenu.objects
+        .filter(
+            is_active="Y"
+        )
+        .order_by(
+            "display_order",
+            "menu_id"
+        )
+    )
+
+    # Build Menu Hierarchy
+
+    menu_map = {}
+
+    for menu in menus:
+
+        menu.children_list = []
+
+        menu_map[
+            menu.menu_id
+        ] = menu
+
+    root_menus = []
+
+    for menu in menus:
+
+        if menu.parent_id:
+
+            parent = menu_map.get(
+                menu.parent_id
+            )
+
+            if parent:
+
+                parent.children_list.append(
+                    menu
+                )
+
+        else:
+
+            root_menus.append(
+                menu
+            )
+
+    # Get Selected User Permissions
+
+    permitted_menu_ids = set()
+
+    if selected_user_id:
+
+        try:
+
+            selected_user_id_int = int(
+                selected_user_id
+            )
+
+            permitted_menu_ids = set(
+                UserMenuPermission.objects
+                .filter(
+                    user_id=selected_user_id_int
+                )
+                .values_list(
+                    "menu_id",
+                    flat=True
+                )
+            )
+
+        except (ValueError, TypeError):
+
+            selected_user_id = ""
+
+    return render(
+        request,
+        "devs/user_menu_permission.html",
+        {
+            "users": users,
+            "root_menus": root_menus,
+            "selected_user_id": selected_user_id,
+            "permitted_menu_ids": permitted_menu_ids,
         }
     )
 

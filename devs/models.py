@@ -36,7 +36,7 @@ class PortalMenu(models.Model):
 
     requires_permission = models.CharField(
         max_length=1,
-        default="N"
+        default="Y"
     )
 
     display_order = models.IntegerField(
@@ -70,3 +70,36 @@ class PortalMenu(models.Model):
     def __str__(self):
 
         return self.menu_name
+
+# =====================================================
+# User Menu Permission
+# =====================================================
+
+class UserMenuPermission(models.Model):
+
+    id = models.AutoField(
+        primary_key=True
+    )
+
+    user_id = models.IntegerField()
+
+    menu_id = models.IntegerField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    created_by = models.IntegerField(
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+
+        managed = False
+
+        db_table = "PY_USER_MENU_PERMISSION"
+
+    def __str__(self):
+
+        return f"{self.user_id} - {self.menu_id}"

@@ -1,0 +1,204 @@
+{% extends "devs/base.html" %}
+
+{% block content %}
+
+<div class="permission-page">
+
+    <div class="permission-header">
+
+        <h2>
+            User Menu Permission
+        </h2>
+
+    </div>
+
+
+    <!-- =====================================================
+         USER SELECTION
+    ====================================================== -->
+
+    <div class="permission-user-box">
+
+        <form
+            method="get"
+            action="{% url 'user_menu_permission' %}"
+        >
+
+            <label for="user_id">
+                Select User
+            </label>
+
+            <select
+                name="user_id"
+                id="user_id"
+                class="permission-user-select"
+                onchange="this.form.submit()"
+            >
+
+                <option value="">
+                    -- Select User --
+                </option>
+
+                {% for user in users %}
+
+                    <option
+                        value="{{ user.id }}"
+                        {% if selected_user_id == user.id|stringformat:"s" %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ user.username }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </form>
+
+    </div>
+
+
+    {% if selected_user_id %}
+
+        <!-- =====================================================
+             MENU PERMISSION TREE
+        ====================================================== -->
+
+        <div class="permission-menu-card">
+
+            <div class="permission-menu-header">
+
+                <div>
+                    Menu Permissions
+                </div>
+
+                <div>
+                    Selected User ID:
+                    <strong>
+                        {{ selected_user_id }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="permission-tree">
+
+                {% include "devs/user_menu_permission_recursive.html" with menus=root_menus %}
+
+            </div>
+
+
+            <div class="permission-actions">
+
+                <button
+                    type="button"
+                    class="save-permission-btn"
+                    onclick="saveUserMenuPermission()"
+                >
+                    Save Permissions
+                </button>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<script>
+
+function saveUserMenuPermission() {
+
+    const userId =
+        document.getElementById("user_id").value;
+
+    if (!userId) {
+
+        alert("Please select a user.");
+
+        return;
+    }
+
+
+    const selectedMenus = [];
+
+
+    document
+        .querySelectorAll(
+            ".menu-permission-checkbox:checked"
+        )
+        .forEach(function (checkbox) {
+
+            selectedMenus.push(
+                checkbox.dataset.menuId
+            );
+
+        });
+
+
+    fetch(
+        "{% url 'user_menu_permission' %}",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json",
+
+                "X-CSRFToken":
+                    "{{ csrf_token }}"
+            },
+
+            body: JSON.stringify({
+
+                user_id: userId,
+
+                menu_ids: selectedMenus
+
+            })
+        }
+    )
+    .then(function(response) {
+
+        return response.json();
+
+    })
+    .then(function(data) {
+
+        if (data.success) {
+
+            alert(
+                "Menu permissions saved successfully."
+            );
+
+            location.reload();
+
+        } else {
+
+            alert(
+                data.message ||
+                "Unable to save permissions."
+            );
+
+        }
+
+    })
+    .catch(function(error) {
+
+        console.error(error);
+
+        alert(
+            "An error occurred while saving permissions."
+        );
+
+    });
+
+}
+
+</script>
+
+{% endblock %}
