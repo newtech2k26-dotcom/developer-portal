@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 #from django.shortcuts import render, redirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 #from .models import PortalMenu
 from .models import PortalMenu, UserMenuPermission
@@ -130,9 +132,7 @@ def menu_management(request):
     )
 
 # =====================================================
-
 # Menu Management
-
 # =====================================================
 
 @login_required
@@ -169,9 +169,7 @@ def menu_management(request):
             is_active=status
         )
 
-    # =====================================================
     # Build Menu Hierarchy
-    # =====================================================
 
     menus = list(
         menus.order_by(
@@ -211,9 +209,7 @@ def menu_management(request):
             )
 
 
-    # =====================================================
     # Flatten Hierarchy For Report
-    # =====================================================
 
     ordered_menus = []
 
@@ -378,10 +374,194 @@ def menu_delete(request, menu_id):
 @login_required
 def user_menu_permission(request):
 
+    # SAVE PERMISSIONS
+
+    if request.method == "POST":
+
+        try:
+
+            import json
+
+            data = json.loads(
+                request.body
+            )
+
+            user_id = data.get(
+                "user_id"
+            )
+
+            menu_ids = data.get(
+                "menu_ids",
+                []
+            )
+
+            # Validate User
+
+            try:
+
+                user_id = int(
+                    user_id
+                )
+
+            except (
+                ValueError,
+                TypeError
+            ):
+
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Invalid user."
+                    },
+                    status=400
+                )
+
+            user = User.objects.filter(
+                id=user_id,
+                is_active=True
+            ).first()
+
+            if not user:
+
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "message": "Selected user was not found."
+                    },
+                    status=404
+                )
+
+            # Validate Menu IDs
+
+            valid_menu_ids = set(
+                PortalMenu.objects
+                .using("mysql")
+                .filter(
+                    menu_id__in=menu_ids,
+                    is_active="Y",
+                    requires_permission="Y"
+                )
+                .values_list(
+                    "menu_id",
+                    flat=True
+                )
+            )
+
+            # Convert everything to integers
+            # and only keep valid menu IDs
+
+            selected_menu_ids = []
+
+            for menu_id in menu_ids:
+
+                try:
+
+                    menu_id = int(
+                        menu_id
+                    )
+
+                except (
+                    ValueError,
+                    TypeError
+                ):
+
+                    continue
+
+                if menu_id in valid_menu_ids:
+
+                    selected_menu_ids.append(
+                        menu_id
+                    )
+
+            # Remove duplicates
+
+            selected_menu_ids = list(
+                set(
+                    selected_menu_ids
+                )
+            )
+
+            # DEFAULT MENU PERMISSIONS
+
+            # Home and About are always available
+            # and must always exist in the user's permission table.
+
+            DEFAULT_MENU_IDS = {1, 19}
+
+
+            # ADD DEFAULT MENUS
+
+            selected_menu_ids = set(selected_menu_ids)
+
+            # Always add Home and About
+            selected_menu_ids.update(
+                DEFAULT_MENU_IDS
+            )
+
+            # Convert back to sorted list
+            selected_menu_ids = sorted(
+                selected_menu_ids
+            )
+
+            # Delete Existing Permissions
+
+            UserMenuPermission.objects \
+                .using("mysql") \
+                .filter(
+                    user_id=user_id
+                ) \
+                .delete()
+
+            # Insert New Permissions
+
+            permission_objects = []
+
+            for menu_id in selected_menu_ids:
+
+                permission_objects.append(
+                    UserMenuPermission(
+                        user_id=user_id,
+                        menu_id=menu_id,
+                        created_by=request.user.id
+                    )
+                )
+
+
+            if permission_objects:
+
+                UserMenuPermission.objects \
+                    .using("mysql") \
+                    .bulk_create(
+                        permission_objects
+                    )
+
+            # SUCCESS RESPONSE
+
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": "Menu permissions saved successfully."
+                }
+            )
+
+        except Exception as e:
+
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": str(e)
+                },
+                status=500
+            )
+
+    # GET
+
     selected_user_id = request.GET.get(
         "user_id",
         ""
     ).strip()
+
+    # Users
 
     users = User.objects.filter(
         is_active=True
@@ -389,8 +569,11 @@ def user_menu_permission(request):
         "username"
     )
 
+    # Menus
+
     menus = list(
         PortalMenu.objects
+        .using("mysql")
         .filter(
             is_active="Y"
         )
@@ -448,6 +631,7 @@ def user_menu_permission(request):
 
             permitted_menu_ids = set(
                 UserMenuPermission.objects
+                .using("mysql")
                 .filter(
                     user_id=selected_user_id_int
                 )
@@ -457,10 +641,14 @@ def user_menu_permission(request):
                 )
             )
 
-        except (ValueError, TypeError):
+        except (
+            ValueError,
+            TypeError
+        ):
 
             selected_user_id = ""
 
+    # Render
     return render(
         request,
         "devs/user_menu_permission.html",

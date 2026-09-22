@@ -2,9 +2,17 @@
 
     {% for menu in menus %}
 
-        <li>
+        <li
+            class="permission-menu-item"
+            data-menu-id="{{ menu.menu_id }}"
+            data-parent-id="{{ menu.parent_id|default:'' }}"
+        >
 
             <div class="permission-menu-row">
+
+                <!-- =========================================
+                     EXPAND / COLLAPSE
+                ========================================== -->
 
                 {% if menu.children_list %}
 
@@ -12,6 +20,7 @@
                         type="button"
                         class="permission-expand-btn"
                         onclick="togglePermissionMenu(this)"
+                        aria-label="Expand menu"
                     >
                         +
                     </button>
@@ -23,54 +32,81 @@
                 {% endif %}
 
 
+                <!-- =========================================
+                     HOME / ABOUT
+                ========================================== -->
+
                 {% if menu.menu_name == "Home" or menu.menu_name == "About" %}
 
                     <span class="permission-menu-public">
-                        {{ menu.menu_name }}
+
+                        <span class="permission-menu-name">
+                            {{ menu.menu_name }}
+                        </span>
+
                         <small>
                             Always Available
                         </small>
+
                     </span>
+
+
+                <!-- =========================================
+                     PERMISSION MENU
+                ========================================== -->
+
+                {% elif menu.requires_permission == "Y" %}
+
+                    <label class="permission-menu-label">
+
+                        <input
+                            type="checkbox"
+
+                            class="menu-permission-checkbox"
+
+                            data-menu-id="{{ menu.menu_id }}"
+
+                            data-parent-id="{{ menu.parent_id|default:'' }}"
+
+                            {% if menu.menu_id in permitted_menu_ids %}
+                                checked
+                            {% endif %}
+
+                        >
+
+                        <span class="permission-menu-name">
+                            {{ menu.menu_name }}
+                        </span>
+
+                    </label>
+
+
+                <!-- =========================================
+                     PUBLIC MENU
+                ========================================== -->
 
                 {% else %}
 
-                    {% if menu.requires_permission == "Y" %}
+                    <span class="permission-menu-public">
 
-                        <label class="permission-menu-label">
-
-                            <input
-                                type="checkbox"
-                                class="menu-permission-checkbox"
-                                data-menu-id="{{ menu.menu_id }}"
-                                {% if menu.menu_id in permitted_menu_ids %}
-                                    checked
-                                {% endif %}
-                            >
-
-                            <span>
-                                {{ menu.menu_name }}
-                            </span>
-
-                        </label>
-
-                    {% else %}
-
-                        <span class="permission-menu-public">
-
+                        <span class="permission-menu-name">
                             {{ menu.menu_name }}
-
-                            <small>
-                                Public
-                            </small>
-
                         </span>
 
-                    {% endif %}
+                        <small>
+                            Public
+                        </small>
+
+                    </span>
 
                 {% endif %}
 
             </div>
 
+
+            <!-- =============================================
+                 CHILDREN
+            ============================================== -->
 
             {% if menu.children_list %}
 
@@ -94,12 +130,21 @@
 
 <script>
 
+/* =========================================================
+   Expand / Collapse Menu
+========================================================= */
+
 function togglePermissionMenu(button) {
 
     const row =
         button.closest(
             ".permission-menu-row"
         );
+
+    if (!row) {
+        return;
+    }
+
 
     const children =
         row.parentElement.querySelector(
@@ -110,22 +155,408 @@ function togglePermissionMenu(button) {
         return;
     }
 
+
     if (
-        children.style.display === "none"
+        children.style.display === "none" ||
+        children.style.display === ""
     ) {
 
-        children.style.display = "block";
+        children.style.display =
+            "block";
 
-        button.textContent = "−";
+        button.textContent =
+            "−";
+
+        button.setAttribute(
+            "aria-label",
+            "Collapse menu"
+        );
 
     } else {
 
-        children.style.display = "none";
+        children.style.display =
+            "none";
 
-        button.textContent = "+";
+        button.textContent =
+            "+";
+
+        button.setAttribute(
+            "aria-label",
+            "Expand menu"
+        );
 
     }
 
 }
+
+
+/* =========================================================
+   Get Checkbox By Menu ID
+========================================================= */
+
+function getPermissionCheckbox(menuId) {
+
+    return document.querySelector(
+        '.menu-permission-checkbox[data-menu-id="' +
+        menuId +
+        '"]'
+    );
+
+}
+
+
+/* =========================================================
+   Get Menu LI By Menu ID
+========================================================= */
+
+function getPermissionMenuItem(menuId) {
+
+    return document.querySelector(
+        '.permission-menu-item[data-menu-id="' +
+        menuId +
+        '"]'
+    );
+
+}
+
+
+/* =========================================================
+   Get Parent ID
+========================================================= */
+
+function getParentMenuId(menuId) {
+
+    const checkbox =
+        getPermissionCheckbox(menuId);
+
+    if (!checkbox) {
+        return null;
+    }
+
+    return (
+        checkbox.dataset.parentId ||
+        null
+    );
+
+}
+
+
+/* =========================================================
+   Check All Parents
+========================================================= */
+
+function checkAllParents(menuId) {
+
+    let currentMenuId =
+        menuId;
+
+
+    while (currentMenuId) {
+
+        const checkbox =
+            getPermissionCheckbox(
+                currentMenuId
+            );
+
+        if (!checkbox) {
+            break;
+        }
+
+
+        /*
+         * Check the parent itself.
+         */
+
+        checkbox.checked =
+            true;
+
+
+        /*
+         * Move to the next parent.
+         */
+
+        const parentId =
+            checkbox.dataset.parentId;
+
+
+        if (!parentId) {
+            break;
+        }
+
+
+        currentMenuId =
+            parentId;
+
+    }
+
+}
+
+
+/* =========================================================
+   Uncheck All Children
+========================================================= */
+
+function uncheckAllChildren(menuId) {
+
+    const menuItem =
+        getPermissionMenuItem(
+            menuId
+        );
+
+    if (!menuItem) {
+        return;
+    }
+
+
+    /*
+     * Find only descendants of
+     * this menu.
+     */
+
+    const childCheckboxes =
+        menuItem.querySelectorAll(
+            ".permission-children .menu-permission-checkbox"
+        );
+
+
+    childCheckboxes.forEach(
+        function (checkbox) {
+
+            checkbox.checked =
+                false;
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   Check Whether Menu Has Checked Children
+========================================================= */
+
+function hasCheckedChildren(menuId) {
+
+    const menuItem =
+        getPermissionMenuItem(
+            menuId
+        );
+
+    if (!menuItem) {
+        return false;
+    }
+
+
+    const children =
+        menuItem.querySelectorAll(
+            ":scope > .permission-children > .permission-menu-list > .permission-menu-item > .permission-menu-row .menu-permission-checkbox"
+        );
+
+
+    for (
+        let i = 0;
+        i < children.length;
+        i++
+    ) {
+
+        if (children[i].checked) {
+            return true;
+        }
+
+    }
+
+
+    /*
+     * A direct child may itself have
+     * descendants. The checkbox above
+     * represents the direct child.
+     */
+
+    return false;
+
+}
+
+
+/* =========================================================
+   Update Parent State
+========================================================= */
+
+function updateParentState(menuId) {
+
+    if (!menuId) {
+        return;
+    }
+
+
+    const parentId =
+        getParentMenuId(
+            menuId
+        );
+
+
+    if (!parentId) {
+        return;
+    }
+
+
+    const parentCheckbox =
+        getPermissionCheckbox(
+            parentId
+        );
+
+
+    if (!parentCheckbox) {
+        return;
+    }
+
+
+    /*
+     * Find direct children of parent.
+     */
+
+    const parentItem =
+        getPermissionMenuItem(
+            parentId
+        );
+
+    if (!parentItem) {
+        return;
+    }
+
+
+    const directChildren =
+        parentItem.querySelectorAll(
+            ":scope > .permission-children > .permission-menu-list > .permission-menu-item > .permission-menu-row .menu-permission-checkbox"
+        );
+
+
+    let hasChecked =
+        false;
+
+
+    directChildren.forEach(
+        function (checkbox) {
+
+            if (checkbox.checked) {
+
+                hasChecked =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    /*
+     * If any direct child is checked,
+     * parent must be checked.
+     *
+     * If no direct child is checked,
+     * parent becomes unchecked.
+     */
+
+    parentCheckbox.checked =
+        hasChecked;
+
+
+    /*
+     * Continue upward.
+     */
+
+    updateParentState(
+        parentId
+    );
+
+}
+
+
+/* =========================================================
+   Checkbox Change
+========================================================= */
+
+function handlePermissionCheckboxChange(
+    checkbox
+) {
+
+    const menuId =
+        checkbox.dataset.menuId;
+
+
+    if (!menuId) {
+        return;
+    }
+
+
+    /* =====================================================
+       CHECKING
+    ===================================================== */
+
+    if (checkbox.checked) {
+
+        /*
+         * When a child is checked,
+         * automatically check every parent.
+         */
+
+        checkAllParents(
+            menuId
+        );
+
+    }
+
+
+    /* =====================================================
+       UNCHECKING
+    ===================================================== */
+
+    else {
+
+        /*
+         * When a parent is unchecked,
+         * uncheck every descendant.
+         */
+
+        uncheckAllChildren(
+            menuId
+        );
+
+
+        /*
+         * Then check whether its parents
+         * still have another checked child.
+         */
+
+        updateParentState(
+            menuId
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   Attach Checkbox Events
+========================================================= */
+
+document.addEventListener(
+    "change",
+    function (event) {
+
+        if (
+            event.target.classList.contains(
+                "menu-permission-checkbox"
+            )
+        ) {
+
+            handlePermissionCheckboxChange(
+                event.target
+            );
+
+        }
+
+    }
+);
 
 </script>

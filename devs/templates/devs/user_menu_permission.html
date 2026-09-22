@@ -1,8 +1,381 @@
 {% extends "devs/base.html" %}
 
+
 {% block content %}
 
+<style>
+
+/* =====================================================
+   USER MENU PERMISSION PAGE
+===================================================== */
+
+.permission-page {
+    width: 100%;
+}
+
+
+/* =====================================================
+   PAGE HEADER
+===================================================== */
+
+.permission-header {
+    margin-bottom: 20px;
+}
+
+.permission-header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+
+/* =====================================================
+   USER SELECTION
+===================================================== */
+
+.permission-user-box {
+    margin-bottom: 20px;
+}
+
+.permission-user-box label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.permission-user-select {
+    width: 280px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   PERMISSION CARD
+===================================================== */
+
+.permission-menu-card {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   MENU HEADER
+===================================================== */
+
+.permission-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 16px;
+
+    border-bottom: 1px solid #ddd;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   MENU TREE
+===================================================== */
+
+.permission-tree {
+    width: 100%;
+    padding: 15px 20px;
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   RESET UL / LI
+===================================================== */
+
+.permission-menu-list {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.permission-menu-item {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* =====================================================
+   MENU ROW
+===================================================== */
+
+.permission-menu-row {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    min-height: 38px;
+
+    padding: 4px 0;
+
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   EXPAND / COLLAPSE BUTTON
+===================================================== */
+
+.permission-expand-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 24px;
+
+    width: 24px;
+    height: 24px;
+
+    margin-right: 8px;
+    padding: 0;
+
+    border: 1px solid #bbb;
+    border-radius: 4px;
+
+    background: #f7f7f7;
+
+    cursor: pointer;
+
+    font-size: 16px;
+    line-height: 1;
+
+    box-sizing: border-box;
+}
+
+.permission-expand-btn:hover {
+    background: #e9e9e9;
+}
+
+
+/* =====================================================
+   LEAF MENU SPACE
+===================================================== */
+
+.permission-expand-space {
+    display: block;
+
+    flex: 0 0 24px;
+
+    width: 24px;
+    height: 24px;
+
+    margin-right: 8px;
+}
+
+
+/* =====================================================
+   MENU LABEL
+===================================================== */
+
+.permission-menu-label {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    min-height: 30px;
+
+    cursor: pointer;
+
+    user-select: none;
+}
+
+
+/* =====================================================
+   CHECKBOX
+===================================================== */
+
+.menu-permission-checkbox {
+    width: 17px;
+    height: 17px;
+
+    margin: 0;
+
+    cursor: pointer;
+
+    flex: 0 0 auto;
+}
+
+
+/* =====================================================
+   MENU NAME
+===================================================== */
+
+.permission-menu-name {
+    display: inline-block;
+
+    font-size: 14px;
+
+    line-height: 24px;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   PUBLIC MENU
+===================================================== */
+
+.permission-menu-public {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.permission-menu-public small {
+    display: inline-block;
+
+    padding: 2px 8px;
+
+    border-radius: 10px;
+
+    background: #eee;
+
+    font-size: 11px;
+
+    line-height: 16px;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   CHILD MENU
+===================================================== */
+
+.permission-children {
+    display: block;
+
+    margin-left: 32px;
+
+    padding-left: 18px;
+
+    border-left: 1px solid #d5d5d5;
+
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   NESTED CHILD MENU
+===================================================== */
+
+.permission-children .permission-children {
+    margin-left: 32px;
+    padding-left: 18px;
+}
+
+
+/* =====================================================
+   SAVE AREA
+===================================================== */
+
+.permission-actions {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    padding: 15px 20px;
+
+    border-top: 1px solid #ddd;
+}
+
+
+/* =====================================================
+   SAVE BUTTON
+===================================================== */
+
+.save-permission-btn {
+    padding: 9px 18px;
+
+    border: 0;
+    border-radius: 4px;
+
+    background: #1976d2;
+
+    color: #fff;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+.save-permission-btn:hover {
+    background: #1565c0;
+}
+
+.save-permission-btn:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .permission-menu-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .permission-user-select {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    .permission-tree {
+        padding: 15px 10px;
+    }
+
+    .permission-children {
+        margin-left: 20px;
+        padding-left: 12px;
+    }
+
+    .permission-children .permission-children {
+        margin-left: 20px;
+        padding-left: 12px;
+    }
+
+}
+
+</style>
+
+
+<!-- =====================================================
+     MAIN PAGE
+===================================================== -->
+
 <div class="permission-page">
+
+
+    <!-- =================================================
+         PAGE HEADER
+    ================================================== -->
 
     <div class="permission-header">
 
@@ -13,9 +386,9 @@
     </div>
 
 
-    <!-- =====================================================
+    <!-- =================================================
          USER SELECTION
-    ====================================================== -->
+    ================================================== -->
 
     <div class="permission-user-box">
 
@@ -23,6 +396,8 @@
             method="get"
             action="{% url 'user_menu_permission' %}"
         >
+
+            {% csrf_token %}
 
             <label for="user_id">
                 Select User
@@ -59,13 +434,18 @@
     </div>
 
 
+    <!-- =================================================
+         PERMISSION AREA
+    ================================================== -->
+
     {% if selected_user_id %}
 
-        <!-- =====================================================
-             MENU PERMISSION TREE
-        ====================================================== -->
-
         <div class="permission-menu-card">
+
+
+            <!-- =========================================
+                 MENU HEADER
+            ========================================== -->
 
             <div class="permission-menu-header">
 
@@ -75,6 +455,7 @@
 
                 <div>
                     Selected User ID:
+
                     <strong>
                         {{ selected_user_id }}
                     </strong>
@@ -83,6 +464,10 @@
             </div>
 
 
+            <!-- =========================================
+                 MENU TREE
+            ========================================== -->
+
             <div class="permission-tree">
 
                 {% include "devs/user_menu_permission_recursive.html" with menus=root_menus %}
@@ -90,10 +475,15 @@
             </div>
 
 
+            <!-- =========================================
+                 SAVE BUTTON
+            ========================================== -->
+
             <div class="permission-actions">
 
                 <button
                     type="button"
+                    id="savePermissionBtn"
                     class="save-permission-btn"
                     onclick="saveUserMenuPermission()"
                 >
@@ -102,102 +492,913 @@
 
             </div>
 
+
         </div>
 
     {% endif %}
+
 
 </div>
 
 
 <script>
 
-function saveUserMenuPermission() {
+/* =====================================================
+   GET COOKIE
+===================================================== */
 
-    const userId =
-        document.getElementById("user_id").value;
+function getCookie(name) {
 
-    if (!userId) {
+    let cookieValue = null;
 
-        alert("Please select a user.");
+    if (
+        document.cookie &&
+        document.cookie !== ""
+    ) {
 
+        const cookies =
+            document.cookie.split(";");
+
+        for (
+            let i = 0;
+            i < cookies.length;
+            i++
+        ) {
+
+            const cookie =
+                cookies[i].trim();
+
+            if (
+                cookie.substring(
+                    0,
+                    name.length + 1
+                ) === name + "="
+            ) {
+
+                cookieValue =
+                    decodeURIComponent(
+                        cookie.substring(
+                            name.length + 1
+                        )
+                    );
+
+                break;
+            }
+        }
+    }
+
+    return cookieValue;
+}
+
+
+/* =====================================================
+   GET CSRF TOKEN
+===================================================== */
+
+function getCSRFToken() {
+
+    const csrfInput =
+        document.querySelector(
+            'input[name="csrfmiddlewaretoken"]'
+        );
+
+    if (
+        csrfInput &&
+        csrfInput.value
+    ) {
+
+        return csrfInput.value;
+    }
+
+    return getCookie("csrftoken");
+}
+
+
+/* =====================================================
+   FIND CHECKBOX
+===================================================== */
+
+function getPermissionCheckbox(menuId) {
+
+    return document.querySelector(
+        '.menu-permission-checkbox[data-menu-id="' +
+        menuId +
+        '"]'
+    );
+}
+
+
+/* =====================================================
+   FIND MENU ITEM
+===================================================== */
+
+function getPermissionMenuItem(menuId) {
+
+    return document.querySelector(
+        '.permission-menu-item[data-menu-id="' +
+        menuId +
+        '"]'
+    );
+}
+
+
+/* =====================================================
+   CHECK ALL PARENTS
+===================================================== */
+
+function checkAllParents(menuId) {
+
+    let currentMenuId = menuId;
+
+    while (currentMenuId) {
+
+        const checkbox =
+            getPermissionCheckbox(
+                currentMenuId
+            );
+
+        if (!checkbox) {
+            break;
+        }
+
+        checkbox.checked = true;
+
+        const parentId =
+            checkbox.dataset.parentId;
+
+        if (!parentId) {
+            break;
+        }
+
+        currentMenuId = parentId;
+    }
+}
+
+
+/* =====================================================
+   UNCHECK ALL CHILDREN
+===================================================== */
+
+function uncheckAllChildren(menuId) {
+
+    const menuItem =
+        getPermissionMenuItem(menuId);
+
+    if (!menuItem) {
         return;
     }
 
+    const childCheckboxes =
+        menuItem.querySelectorAll(
+            ":scope > .permission-children " +
+            ".menu-permission-checkbox"
+        );
+
+    childCheckboxes.forEach(
+        function(checkbox) {
+
+            checkbox.checked = false;
+
+        }
+    );
+}
+
+
+/* =====================================================
+   UPDATE PARENT STATE
+===================================================== */
+
+function updateParentState(menuId) {
+
+    if (!menuId) {
+        return;
+    }
+
+    const checkbox =
+        getPermissionCheckbox(menuId);
+
+    if (!checkbox) {
+        return;
+    }
+
+    const parentId =
+        checkbox.dataset.parentId;
+
+    if (!parentId) {
+        return;
+    }
+
+    const parentCheckbox =
+        getPermissionCheckbox(parentId);
+
+    if (!parentCheckbox) {
+        return;
+    }
+
+    const parentItem =
+        getPermissionMenuItem(parentId);
+
+    if (!parentItem) {
+        return;
+    }
+
+    /*
+     * Only direct children
+     */
+
+    const directChildren =
+        parentItem.querySelectorAll(
+
+            ":scope > " +
+            ".permission-children > " +
+            ".permission-menu-list > " +
+            ".permission-menu-item > " +
+            ".permission-menu-row " +
+            ".menu-permission-checkbox"
+
+        );
+
+    let hasCheckedChild = false;
+
+    directChildren.forEach(
+        function(childCheckbox) {
+
+            if (
+                childCheckbox.checked
+            ) {
+
+                hasCheckedChild = true;
+
+            }
+
+        }
+    );
+
+    parentCheckbox.checked =
+        hasCheckedChild;
+
+    /*
+     * Update grandparent
+     */
+
+    updateParentState(parentId);
+}
+
+
+/* =====================================================
+   HANDLE CHECKBOX CHANGE
+===================================================== */
+
+function handlePermissionCheckboxChange(
+    checkbox
+) {
+
+    const menuId =
+        checkbox.dataset.menuId;
+
+    if (!menuId) {
+        return;
+    }
+
+    /*
+     * CHECKED
+     */
+
+    if (checkbox.checked) {
+
+        checkAllParents(menuId);
+
+    }
+
+    /*
+     * UNCHECKED
+     */
+
+    else {
+
+        uncheckAllChildren(menuId);
+
+        updateParentState(menuId);
+
+    }
+}
+
+
+/* =====================================================
+   CHECKBOX CHANGE EVENT
+===================================================== */
+
+document.addEventListener(
+    "change",
+    function(event) {
+
+        if (
+            event.target.classList.contains(
+                "menu-permission-checkbox"
+            )
+        ) {
+
+            handlePermissionCheckboxChange(
+                event.target
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   SYNCHRONIZE PARENTS
+   AFTER EXISTING PERMISSIONS LOAD
+===================================================== */
+
+function synchronizeParentPermissions() {
+
+    const checkedCheckboxes =
+        document.querySelectorAll(
+            ".menu-permission-checkbox:checked"
+        );
+
+    checkedCheckboxes.forEach(
+        function(checkbox) {
+
+            checkAllParents(
+                checkbox.dataset.menuId
+            );
+
+        }
+    );
+}
+
+
+/* =====================================================
+   GET CURRENT SELECTED MENU IDS
+===================================================== */
+
+function getCurrentSelectedMenuIds() {
 
     const selectedMenus = [];
-
 
     document
         .querySelectorAll(
             ".menu-permission-checkbox:checked"
         )
-        .forEach(function (checkbox) {
+        .forEach(
+            function(checkbox) {
 
-            selectedMenus.push(
-                checkbox.dataset.menuId
-            );
+                const menuId =
+                    checkbox.dataset.menuId;
+
+                if (menuId) {
+
+                    /*
+                     * Convert to Number here.
+                     */
+
+                    selectedMenus.push(
+                        Number(menuId)
+                    );
+
+                }
+
+            }
+        );
+
+    return selectedMenus;
+}
+
+
+/* =====================================================
+   SORT MENU IDS
+===================================================== */
+
+function sortMenuIds(menuIds) {
+
+    return menuIds
+        .map(function(menuId) {
+
+            return Number(menuId);
+
+        })
+        .sort(function(a, b) {
+
+            return a - b;
 
         });
+}
 
+
+/* =====================================================
+   COMPARE PERMISSIONS
+===================================================== */
+
+function permissionsAreEqual(
+    originalMenus,
+    currentMenus
+) {
+
+    const original =
+        sortMenuIds(
+            originalMenus
+        );
+
+    const current =
+        sortMenuIds(
+            currentMenus
+        );
+
+    if (
+        original.length !==
+        current.length
+    ) {
+
+        return false;
+
+    }
+
+    for (
+        let i = 0;
+        i < original.length;
+        i++
+    ) {
+
+        if (
+            original[i] !==
+            current[i]
+        ) {
+
+            return false;
+
+        }
+
+    }
+
+    return true;
+}
+
+
+/* =====================================================
+   SAVE USER MENU PERMISSION
+===================================================== */
+
+function saveUserMenuPermission() {
+
+    const userSelect =
+        document.getElementById(
+            "user_id"
+        );
+
+    const saveButton =
+        document.getElementById(
+            "savePermissionBtn"
+        );
+
+
+    /* =================================================
+       CHECK USER
+    ================================================= */
+
+    if (!userSelect) {
+
+        alert(
+            "User selection control was not found."
+        );
+
+        return;
+    }
+
+
+    const userId =
+        userSelect.value;
+
+
+    if (!userId) {
+
+        alert(
+            "Please select a user."
+        );
+
+        return;
+    }
+
+
+    /* =================================================
+       CURRENT PERMISSIONS
+    ================================================= */
+
+    const currentMenus =
+        getCurrentSelectedMenuIds();
+
+
+    /* =================================================
+       ORIGINAL PERMISSIONS
+       Loaded from Django database
+    ================================================= */
+
+    const originalMenus = [
+
+        {% for menu_id in permitted_menu_ids %}
+
+            Number("{{ menu_id }}")
+
+            {% if not forloop.last %}
+                ,
+            {% endif %}
+
+        {% endfor %}
+
+    ];
+
+
+    /* =================================================
+       SORT
+    ================================================= */
+
+    const originalSorted =
+        sortMenuIds(
+            originalMenus
+        );
+
+    const currentSorted =
+        sortMenuIds(
+            currentMenus
+        );
+
+
+    /* =================================================
+       DEBUG
+    ================================================= */
+
+    console.log(
+        "Selected User ID:",
+        userId
+    );
+
+    console.log(
+        "Original Permissions:",
+        originalSorted
+    );
+
+    console.log(
+        "Current Permissions:",
+        currentSorted
+    );
+
+
+    /* =================================================
+       CASE 1
+       NOTHING SELECTED
+    ================================================= */
+
+    if (
+        originalSorted.length === 0 &&
+        currentSorted.length === 0
+    ) {
+
+        alert(
+            "Nothing selected to save."
+        );
+
+        return;
+    }
+
+
+    /* =================================================
+       CASE 2
+       NOTHING CHANGED
+    ================================================= */
+
+    if (
+        permissionsAreEqual(
+            originalSorted,
+            currentSorted
+        )
+    ) {
+
+        alert(
+            "Nothing has changed to save."
+        );
+
+        return;
+    }
+
+
+    /* =================================================
+       CSRF
+    ================================================= */
+
+    const csrfToken =
+        getCSRFToken();
+
+
+    if (!csrfToken) {
+
+        alert(
+            "CSRF token was not found. Please refresh the page and try again."
+        );
+
+        return;
+    }
+
+
+    /* =================================================
+       DISABLE BUTTON
+    ================================================= */
+
+    if (saveButton) {
+
+        saveButton.disabled = true;
+
+        saveButton.dataset.originalText =
+            saveButton.textContent;
+
+        saveButton.textContent =
+            "Saving...";
+
+    }
+
+
+    /* =================================================
+       REQUEST DATA
+    ================================================= */
+
+    const requestData = {
+
+        user_id:
+            Number(userId),
+
+        menu_ids:
+            currentSorted
+
+    };
+
+
+    console.log(
+        "Sending permission data:",
+        requestData
+    );
+
+
+    /* =================================================
+       POST REQUEST
+    ================================================= */
 
     fetch(
         "{% url 'user_menu_permission' %}",
         {
+
             method: "POST",
 
+            credentials: "same-origin",
+
             headers: {
+
                 "Content-Type":
                     "application/json",
 
                 "X-CSRFToken":
-                    "{{ csrf_token }}"
+                    csrfToken,
+
+                "X-Requested-With":
+                    "XMLHttpRequest",
+
+                "Accept":
+                    "application/json"
+
             },
 
-            body: JSON.stringify({
+            body:
+                JSON.stringify(
+                    requestData
+                )
 
-                user_id: userId,
-
-                menu_ids: selectedMenus
-
-            })
         }
     )
-    .then(function(response) {
 
-        return response.json();
+    /* =================================================
+       RESPONSE
+    ================================================= */
 
-    })
-    .then(function(data) {
+    .then(
+        function(response) {
 
-        if (data.success) {
-
-            alert(
-                "Menu permissions saved successfully."
+            console.log(
+                "HTTP Status:",
+                response.status
             );
 
-            location.reload();
+            console.log(
+                "HTTP OK:",
+                response.ok
+            );
 
-        } else {
+
+            /*
+             * Always read the response as text first.
+             * This lets us see the actual Django response
+             * when something goes wrong.
+             */
+
+            return response.text()
+                .then(
+                    function(responseText) {
+
+                        console.log(
+                            "Server Response:",
+                            responseText
+                        );
+
+
+                        let data = null;
+
+
+                        /*
+                         * Try JSON
+                         */
+
+                        try {
+
+                            data =
+                                JSON.parse(
+                                    responseText
+                                );
+
+                        }
+                        catch (jsonError) {
+
+                            /*
+                             * Django may have returned
+                             * an HTML error page.
+                             */
+
+                            console.error(
+                                "JSON Parse Error:",
+                                jsonError
+                            );
+
+                            console.error(
+                                "Complete Server Response:",
+                                responseText
+                            );
+
+
+                            /*
+                             * Show useful information
+                             * instead of hiding the response.
+                             */
+
+                            throw new Error(
+                                "Server returned HTTP " +
+                                response.status +
+                                ". Check the browser Console and Django terminal for the exact error."
+                            );
+
+                        }
+
+
+                        return {
+
+                            status:
+                                response.status,
+
+                            ok:
+                                response.ok,
+
+                            data:
+                                data
+
+                        };
+
+                    }
+                );
+
+        }
+    )
+
+
+    /* =================================================
+       PROCESS SERVER RESPONSE
+    ================================================= */
+
+    .then(
+        function(result) {
+
+            console.log(
+                "Parsed Server Response:",
+                result
+            );
+
+
+            const data =
+                result.data;
+
+
+            /*
+             * SUCCESS
+             */
+
+            if (
+                result.ok &&
+                data.success === true
+            ) {
+
+                alert(
+                    data.message ||
+                    "Menu permissions saved successfully."
+                );
+
+
+                /*
+                 * Reload selected user
+                 */
+
+                window.location.href =
+                    "{% url 'user_menu_permission' %}" +
+                    "?user_id=" +
+                    encodeURIComponent(
+                        userId
+                    );
+
+                return;
+            }
+
+
+            /*
+             * SERVER RETURNED JSON ERROR
+             */
 
             alert(
                 data.message ||
-                "Unable to save permissions."
+                (
+                    "Unable to save permissions. " +
+                    "HTTP Status: " +
+                    result.status
+                )
             );
 
         }
+    )
 
-    })
-    .catch(function(error) {
 
-        console.error(error);
+    /* =================================================
+       ERROR
+    ================================================= */
 
-        alert(
-            "An error occurred while saving permissions."
-        );
+    .catch(
+        function(error) {
 
-    });
+            console.error(
+                "Permission Save Error:",
+                error
+            );
+
+
+            alert(
+                error.message ||
+                "An error occurred while saving permissions."
+            );
+
+        }
+    )
+
+
+    /* =================================================
+       RESTORE BUTTON
+    ================================================= */
+
+    .finally(
+        function() {
+
+            if (saveButton) {
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    saveButton.dataset.originalText ||
+                    "Save Permissions";
+
+            }
+
+        }
+    );
 
 }
+
+
+/* =====================================================
+   PAGE LOAD
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        synchronizeParentPermissions();
+
+    }
+);
 
 </script>
 
